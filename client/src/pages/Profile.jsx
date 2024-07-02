@@ -121,7 +121,8 @@ const Profile = () => {
     try {
       await fetch("/api/auth/signout");
       dispatch(signOut());
-      navigate("/apps/quiz-app-new/");
+      navigate("/apps/quiz-app-new/start");
+      dispatch(signOut);
     } catch (error) {
       console.log(error);
     }
@@ -142,7 +143,7 @@ const Profile = () => {
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
         <div className="col-span-4 rounded-xl p-3 bg-gray-100 flex flex-col gap-2">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-4 items-center">
             <img
               className="w-16 h-16 rounded-full object-cover cursor-pointer"
               src={formData.profilePhoto || currentUser.profilePhoto}
@@ -169,7 +170,7 @@ const Profile = () => {
               <PencilSquareIcon className="size-5 text-gray-700" />
             </button>
             <Link
-              to="/apps/quiz-app/settings"
+              to="/apps/quiz-app-new/settings"
               className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl p-2 text-md font-semibold text-violet-500 hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               <Cog8ToothIcon className="size-5 text-gray-700" />
@@ -190,15 +191,15 @@ const Profile = () => {
           </h3>
           <div className="grid grid-cols-3 gap-2 text-gray-700">
             <div>
-              <h4 className="text-2xl font-bold text-indigo-500">15</h4>
+              <h4 className="text-2xl font-bold text-violet-500">15</h4>
               <p className="text-sm">Quizzes Taken</p>
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-indigo-500">85%</h4>
+              <h4 className="text-2xl font-bold text-violet-500">85%</h4>
               <p className="text-sm">Average Score</p>
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-indigo-500">10</h4>
+              <h4 className="text-2xl font-bold text-violet-500">10</h4>
               <p className="text-sm">Quizzes Created</p>
             </div>
           </div>
@@ -387,11 +388,6 @@ const Profile = () => {
                       text={loading ? "Loading..." : "Save"}
                       onClick={handleButtonEventUpdate}
                     ></ButtonPrimary>
-                    <ButtonError
-                      text="Delete Account"
-                      type="button"
-                      onClick={handleButtonEventDelete}
-                    ></ButtonError>
                   </div>
                 </form>
               </div>

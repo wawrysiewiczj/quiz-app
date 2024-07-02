@@ -19,7 +19,7 @@ const Home = () => {
     <Animation>
       <div className="flex flex-col gap-2">
         <div className="mb-4">
-          <h2 className="text-3xl font-semibold tracking-wide">
+          <h2 className="text-3xl font-semibold tracking-tight mb-4">
             Hi, {currentUser.username}!
           </h2>
           <p className="text-sm text-gray-800">
@@ -62,7 +62,7 @@ const Home = () => {
             </div>
           </Link>
           <Link
-            to="/apps/quiz-app-new/leaderboard"
+            to="/apps/quiz-app-new/ranking"
             className={classLinkPrimaryOutline}
           >
             <div>

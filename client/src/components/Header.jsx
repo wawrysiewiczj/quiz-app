@@ -42,7 +42,10 @@ const Header = () => {
           </Link>
         )}
         {currentUser ? (
-          <Link to="/apps/quiz-app-new/" className={headerIconClassName}>
+          <Link
+            to="/apps/quiz-app-new/notifications"
+            className={headerIconClassName}
+          >
             <BellIcon className="size-5 text-gray-700" />
           </Link>
         ) : (

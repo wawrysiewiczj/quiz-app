@@ -1,14 +1,28 @@
-import React from 'react'
-import { HomeIcon, Squares2X2Icon, EnvelopeIcon, PlusIcon, UserIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom'
+import React from "react";
+import {
+  HomeIcon,
+  Squares2X2Icon,
+  EnvelopeIcon,
+  PlusIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 const navItems = [
   { to: "/apps/quiz-app-new/", icon: HomeIcon, label: "Home" },
-  { to: "/apps/quiz-app-new/start-game", icon: Squares2X2Icon, label: "Start Game" },
-  { to: "/apps/quiz-app-new/", icon: PlusIcon, label: "Add Quiz" },
-  { to: "/apps/quiz-app-new/", icon: EnvelopeIcon, label: "Messages" },
+  {
+    to: "/apps/quiz-app-new/start-game",
+    icon: Squares2X2Icon,
+    label: "Start Game",
+  },
+  {
+    to: "/apps/quiz-app-new/create-quiz",
+    icon: PlusIcon,
+    label: "Create Quiz",
+  },
+  { to: "/apps/quiz-app-new/messages", icon: EnvelopeIcon, label: "Messages" },
   { to: "/apps/quiz-app-new/profile", icon: UserIcon, label: "My Profile" },
-]
+];
 
 const NavbarBottom = () => {
   return (
@@ -16,7 +30,10 @@ const NavbarBottom = () => {
       <div className="flex justify-around max-w-3xl mx-auto">
         {navItems.map((item, index) => (
           <div key={index} className="group">
-            <Link to={item.to} className="flex items-end justify-center text-center mx-auto w-full text-gray-700 rounded-xl group-hover:text-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+            <Link
+              to={item.to}
+              className="flex items-end justify-center text-center mx-auto w-full text-gray-700 rounded-xl group-hover:text-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            >
               <span className="block px-1 py-1">
                 <span className="sr-only block text-xs">{item.label}</span>
                 <item.icon className="size-6 group-hover:text-violet-600 pt-1 mb-1" />
@@ -27,7 +44,7 @@ const NavbarBottom = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NavbarBottom
+export default NavbarBottom;
