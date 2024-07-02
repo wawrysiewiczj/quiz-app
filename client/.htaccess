@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On RewriteBase /apps/quiz-app-new/ RewriteRule ^index\.html$ -
+  [L] RewriteCond %{REQUEST_FILENAME} !-f RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /apps/quiz-app-new/index.html [L]
+</IfModule>
