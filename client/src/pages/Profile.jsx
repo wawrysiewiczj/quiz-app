@@ -121,7 +121,7 @@ const Profile = () => {
     try {
       await fetch("/api/auth/signout");
       dispatch(signOut());
-      navigate("/apps/quiz-app-new/start");
+      navigate("/apps/quiz-app-new/");
     } catch (error) {
       console.log(error);
     }
