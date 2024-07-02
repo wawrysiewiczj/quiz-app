@@ -16,7 +16,7 @@ export default function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/apps/quiz-app-new/" element={<Start />} />
+        <Route path="/apps/quiz-app-new/start" element={<Start />} />
         <Route path="/apps/quiz-app-new/login" element={<Login />} />
         <Route path="/apps/quiz-app-new/sign-up" element={<SignUp />} />
         <Route element={<PrivateRoute />}>
