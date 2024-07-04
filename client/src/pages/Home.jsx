@@ -31,7 +31,7 @@ const Home = () => {
           <Link to="/apps/quiz-app-new/profile" className={classLinkPrimary}>
             <div>
               <h3 className="text-xl font-semibold tracking-tight mb-2">
-                Your Progress
+                Your Profile
               </h3>
               <p className="text-sm">Check your progress and achievements</p>
             </div>
@@ -44,7 +44,7 @@ const Home = () => {
         </div>
         <div className="grid grid-cols-8 gap-2">
           <Link
-            to="/apps/quiz-app-new/startgame"
+            to="/apps/quiz-app-new/start-game"
             className={classLinkSecondary}
           >
             <div>

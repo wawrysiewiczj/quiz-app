@@ -144,7 +144,7 @@ const Profile = () => {
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
         <div className="col-span-4 rounded-xl p-3 bg-gray-100 flex flex-col gap-2">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 items-center">
             <img
               className="w-16 h-16 rounded-full object-cover cursor-pointer"
               src={formData.profilePhoto || currentUser.profilePhoto}
@@ -365,7 +365,7 @@ const Profile = () => {
                     type="text"
                     id="username"
                     placeholder="Your name"
-                    className="flex-1 w-full bg-white text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                     onChange={handleChange}
                   />
                   <input
@@ -373,14 +373,14 @@ const Profile = () => {
                     type="text"
                     id="email"
                     placeholder="Email"
-                    className="flex-1 w-full bg-white text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                     onChange={handleChange}
                   />
                   <input
                     type="password"
                     id="password"
                     placeholder="Password"
-                    className="mb-4 flex-1 w-full bg-white text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                    className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                     onChange={handleChange}
                   />
                   <div className="flex gap-2">

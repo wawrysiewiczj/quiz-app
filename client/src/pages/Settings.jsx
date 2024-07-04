@@ -10,9 +10,9 @@ import {
 } from "../redux/user/userSlice";
 
 const Settings = () => {
-  const [enabled1, setEnabled1] = useState(true);
+  const [enabled1, setEnabled1] = useState(false);
   const [enabled2, setEnabled2] = useState(false);
-  const [enabled3, setEnabled3] = useState(true);
+  const [enabled3, setEnabled3] = useState(false);
   const [enabled4, setEnabled4] = useState(false);
 
   const dispatch = useDispatch();
@@ -38,8 +38,6 @@ const Settings = () => {
 
   return (
     <Animation>
-      <h2 className="text-2xl font-bold mb-6">Settings</h2>
-
       {/* Application Settings */}
       <div className="bg-gray-100 rounded-xl shadow-sm p-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">
@@ -49,6 +47,7 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <span className="text-gray-800">Dark Mode</span>
             <Switch
+              disabled
               checked={enabled1}
               onChange={setEnabled1}
               className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"
@@ -59,6 +58,7 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <span className="text-gray-800">Notifications</span>
             <Switch
+              disabled
               checked={enabled2}
               onChange={setEnabled2}
               className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"
@@ -68,7 +68,10 @@ const Settings = () => {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-800">Language</span>
-            <select className="bg-gray-100 text-gray-700 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+            <select
+              disabled
+              className="bg-gray-100 text-gray-700 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+            >
               <option>English</option>
               <option>Spanish</option>
               <option>French</option>
@@ -80,13 +83,14 @@ const Settings = () => {
 
       {/* Notification Settings */}
       <div className="bg-gray-100 rounded-xl shadow-sm p-4 mb-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
           Notification Settings
         </h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-gray-800">Enable Email Notifications</span>
             <Switch
+              disabled
               checked={enabled3}
               onChange={setEnabled3}
               className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"
@@ -97,6 +101,7 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <span className="text-gray-800">Enable Push Notifications</span>
             <Switch
+              disabled
               checked={enabled4}
               onChange={setEnabled4}
               className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"

@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ArrowLeftIcon,
+  ChevronLeftIcon,
   BellIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -12,35 +13,44 @@ const headerIconClassName =
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const location = useLocation();
+
+  const getTitle = () => {
+    const { pathname } = location;
+    switch (pathname) {
+      case "/apps/quiz-app-new/":
+        return "Quiz App";
+      case "/apps/quiz-app-new/start":
+        return "Quiz App";
+      case "/apps/quiz-app-new/notifications":
+        return "Notifications";
+      case "/apps/quiz-app-new/messages":
+        return "Chat";
+      case "/apps/quiz-app-new/settings":
+        return "Settings";
+      case "/apps/quiz-app-new/profile":
+        return "Profile";
+      case "/apps/quiz-app-new/start-game":
+        return "Start Game";
+      case "/apps/quiz-app-new/create-quiz":
+        return "Create Quiz";
+      default:
+        return "Quiz App";
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 bg-gray-100 w-full py-1.5 px-4 shadow-sm backdrop-blur-lg bg-opacity-50 z-50">
       <div className={`flex justify-between items-center max-w-3xl mx-auto`}>
         {currentUser ? (
           <Link to="/apps/quiz-app-new/" className={`${headerIconClassName}`}>
-            <ArrowLeftIcon className="size-5 text-gray-700" />
+            <ChevronLeftIcon className="size-5 text-gray-700" />
           </Link>
         ) : (
-          <Link
-            to="/apps/quiz-app-new/start"
-            className={`${headerIconClassName}`}
-          >
-            <XMarkIcon className="size-5 text-gray-700" />
-          </Link>
+          <div className={headerIconClassName} />
         )}
 
-        {currentUser ? (
-          <Link className="py-3" to="/apps/quiz-app-new/">
-            <h1 className="text-xl font-semibold tracking-tight text-gray-800">
-              Quiz App
-            </h1>
-          </Link>
-        ) : (
-          <Link className="py-3" to="/apps/quiz-app-new/start">
-            <h1 className="text-xl font-semibold tracking-tight text-gray-800">
-              Quiz App
-            </h1>
-          </Link>
-        )}
+        <h1 className="px-3 py-3 text-lg font-semibold">{getTitle()}</h1>
         {currentUser ? (
           <Link
             to="/apps/quiz-app-new/notifications"
@@ -49,9 +59,7 @@ const Header = () => {
             <BellIcon className="size-5 text-gray-700" />
           </Link>
         ) : (
-          <Link to="/apps/quiz-app-new/login" className={headerIconClassName}>
-            Log in
-          </Link>
+          <div className={headerIconClassName} />
         )}
       </div>
     </div>

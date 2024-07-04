@@ -60,7 +60,7 @@ const Login = () => {
               placeholder="Username"
               aria-describedby="username"
               aria-invalid="false"
-              className="w-full flex-1 bg-gray-100 text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+              className="w-full flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
               onChange={handleChange}
             />
             <div id="username" className="sr-only">
@@ -76,13 +76,14 @@ const Login = () => {
               placeholder="Password"
               aria-describedby="password"
               aria-invalid="false"
-              className="w-full flex-1 bg-gray-100 text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+              className="w-full flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
               onChange={handleChange}
             />
             <div id="password" className="sr-only">
               your password should be more than 6 character
             </div>
           </div>
+
           <div className="flex flex-col gap-2">
             <button
               disabled={loading}
@@ -91,19 +92,26 @@ const Login = () => {
             >
               {loading ? "Signing In..." : "Sign In"}
             </button>
+
+            <div className="flex items-center text-sm gap-2 mt-2">
+              <p className="text-gray-500">Don't have an account? </p>
+              <Link
+                to="/apps/quiz-app-new/sign-up"
+                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+              >
+                <span>Sign Up</span>
+              </Link>
+            </div>
+            <div className="flex flex-row justify-center pt-6 mb-10">
+              <span className="absolute bg-gray-200 px-4 text-gray-500">
+                or sign-in with
+              </span>
+              <div className="w-full bg-gray-300 mt-3 h-px"></div>
+            </div>
             <OAuth />
           </div>
         </form>
 
-        <div className="flex items-center text-sm gap-2 mt-2">
-          <p className="text-gray-500">Don't have an account? </p>
-          <Link
-            to="/apps/quiz-app-new/sign-up"
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >
-            <span>Sign Up</span>
-          </Link>
-        </div>
         <p className="text-red-600 mt-2">
           {error ? error.message || "Something went wrong" : ""}
         </p>

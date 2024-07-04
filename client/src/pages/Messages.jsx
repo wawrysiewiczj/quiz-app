@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import {
+  PaperAirplaneIcon,
+  ChevronLeftIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import Animation from "../components/Animation";
 import { motion as m } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -91,15 +95,9 @@ const Messages = () => {
       <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-40 ">
         <div className="max-w-3xl mx-auto h-full flex flex-col">
           {/* Selected Conversation */}
-          <div className="h-full mt-2">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Global Chat
-              </h3>
-              <p className="rounded-lg text-sm">lastactive</p>
-            </div>
+          <div className="h-full">
             <div
-              className="border-t border-gray-300 pt-2 h-full animate duration-300 overflow-y-scroll mt-2"
+              className="h-full animate duration-300 overflow-y-scroll"
               ref={messageContainerRef}
             >
               {messages.length > 0 ? (
@@ -141,7 +139,7 @@ const Messages = () => {
                         {message.senderUsername}
                       </h3>
                       <p
-                        className={`text-sm rounded-xl px-3 py-2  ${
+                        className={`text-sm rounded-3xl px-3 py-2  ${
                           message.senderId === currentUser._id
                             ? "bg-red-300 text-gray-800 self-end"
                             : "bg-gray-300 text-gray-800 "
@@ -168,16 +166,22 @@ const Messages = () => {
             <div className="flex px-4 w-full left-0 fixed bottom-16">
               <form
                 onSubmit={handleSubmit}
-                className="max-w-3xl mx-auto w-full flex"
+                className="max-w-3xl mx-auto w-full flex gap-2"
               >
+                {/* <button
+                  type="button"
+                  className="flex justify-center items-center bg-violet-600 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <PlusIcon className="w-5 h-5 inline" />
+                </button> */}
                 <input
                   type="text"
-                  className="flex-1 bg-gray-100 text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                  placeholder="Message"
+                  className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                  placeholder="Aa"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <button className="flex justify-center items-center ml-2 bg-violet-600 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button className="flex justify-center items-center bg-violet-600 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <PaperAirplaneIcon className="w-5 h-5 inline" />
                 </button>
               </form>
