@@ -6,7 +6,22 @@ import jwt from "jsonwebtoken";
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
+
+  const user = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  if (user) {
+    if (user.username === username) {
+      return next(errorHandler(400, "User already exist"));
+    }
+    if (user.email === email) {
+      return next(errorHandler(400, "Email already used"));
+    }
+  }
+
   const newUser = new User({ username, email, password: hashedPassword });
+
   try {
     await newUser.save();
     res.status(201).json({ message: "User created succefully" });
@@ -27,7 +42,7 @@ export const login = async (req, res, next) => {
     const { password: hashedPassword, ...rest } = validUser._doc;
     const expiryDate = new Date(Date.now() + 3600000);
     res
-      .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
+      .cookie("access_token", token, { httpOnly: true })
       .status(200)
       .json(rest);
   } catch (error) {
@@ -43,7 +58,7 @@ export const google = async (req, res, next) => {
       const { password: hashedPassword, ...rest } = user._doc;
       const expiryDate = new Date(Date.now() + 3600000);
       res
-        .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
+        .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(rest);
     } else {
@@ -77,5 +92,10 @@ export const google = async (req, res, next) => {
 };
 
 export const signout = (req, res) => {
-  res.clearCookie("access_token").status(200).json("Signout success!");
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json("User has been logged out!");
+  } catch (error) {
+    next(error);
+  }
 };

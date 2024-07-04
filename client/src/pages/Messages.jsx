@@ -92,7 +92,7 @@ const Messages = () => {
 
   return (
     <Animation>
-      <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-28 ">
+      <div className="h-full w-full fixed bottom-0 left-0 pt-14 px- pb-28 ">
         <div className="max-w-3xl mx-auto h-full flex flex-col">
           {/* Selected Conversation */}
           <div className="h-full">
@@ -100,6 +100,9 @@ const Messages = () => {
               className="h-full animate duration-300 overflow-y-scroll"
               ref={messageContainerRef}
             >
+              <div className="flex justify-center items-start py-8">
+                <h2>Chat for everyone</h2>
+              </div>
               {messages.length > 0 ? (
                 messages.map((message) => (
                   <m.div
@@ -108,7 +111,7 @@ const Messages = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-                    className={`flex items-end gap-1 mb-2 ${
+                    className={`flex items-end gap-1 mb-2 px-4 ${
                       message.senderId === currentUser._id
                         ? "justify-end"
                         : "justify-start"

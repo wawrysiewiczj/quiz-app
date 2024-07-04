@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -67,11 +69,13 @@ const Profile = () => {
       },
       (error) => {
         setImageUploadError(true);
+        toast.error("Image upload failed!");
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, profilePhoto: downloadURL })
-        );
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, profilePhoto: downloadURL });
+          toast.success("Image uploaded successfully!");
+        });
       }
     );
   };
@@ -92,12 +96,15 @@ const Profile = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(updateUserFailure(data));
+        toast.error("User update failed!");
         return;
       }
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
+      toast.success("User updated successfully!");
     } catch (error) {
       dispatch(updateUserFailure(error));
+      toast.error("An error occurred during user update!");
     }
   };
 
@@ -110,11 +117,14 @@ const Profile = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data));
+        toast.error("Account deletion failed!");
         return;
       }
       dispatch(deleteUserSuccess(data));
+      toast.success("Account deleted successfully!");
     } catch (error) {
       dispatch(deleteUserFailure(error));
+      toast.error("An error occurred during account deletion!");
     }
   };
 
@@ -124,7 +134,9 @@ const Profile = () => {
       dispatch(signOut());
       navigate("/apps/quiz-app-new/start");
       dispatch(signOut);
+      toast.success("Signed out successfully!");
     } catch (error) {
+      toast.error("An error occurred during sign out!");
       console.log(error);
     }
   };
@@ -141,6 +153,11 @@ const Profile = () => {
 
   return (
     <Animation>
+      <ToastContainer
+        autoClose={5000}
+        draggablePercent={60}
+        position="top-right"
+      />
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
         <div className="col-span-4 rounded-xl p-3 bg-gray-100 flex flex-col gap-2">
@@ -150,18 +167,12 @@ const Profile = () => {
               src={formData.profilePhoto || currentUser.profilePhoto}
               alt="Profile Poto"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-center">
               <h3 className="text-2xl font-semibold text-gray-800">
                 {currentUser.username}
               </h3>
               <p className="text-gray-700 text-sm">{currentUser.email}</p>
             </div>
-          </div>
-          <div className="flex justify-center text-sm">
-            <p className="text-red-700">{error && "Something went wrong!"}</p>
-            <p className="text-green-700">
-              {updateSuccess && "User is updated successfully!"}
-            </p>
           </div>
           <div className="flex items-center">
             <button
@@ -212,7 +223,7 @@ const Profile = () => {
             Completed Quizzes
           </h3>
           <ul className="text-gray-700 grid grid-cols-4 gap-2">
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
+            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
               <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
                 <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
                   <AcademicCapIcon className="h-6 w-6" />
@@ -222,11 +233,11 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300">
                 <span>100%</span>
               </div>
             </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
+            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
               <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
                 <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
                   <AcademicCapIcon className="h-6 w-6" />
@@ -234,13 +245,13 @@ const Profile = () => {
               </div>
               <div>
                 <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 1</p>
+                <p className="text-sm font-semibold">Level 2</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
-                <span>100%</span>
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300">
+                <span>90%</span>
               </div>
             </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
+            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-red-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
               <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
                 <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
                   <AcademicCapIcon className="h-6 w-6" />
@@ -248,13 +259,13 @@ const Profile = () => {
               </div>
               <div>
                 <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 1</p>
+                <p className="text-sm font-semibold">Level 3</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
-                <span>100%</span>
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-red-300">
+                <span>30%</span>
               </div>
             </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
+            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-orange-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
               <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
                 <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
                   <AcademicCapIcon className="h-6 w-6" />
@@ -262,10 +273,10 @@ const Profile = () => {
               </div>
               <div>
                 <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 1</p>
+                <p className="text-sm font-semibold">Level 4</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
-                <span>100%</span>
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-orange-300">
+                <span>60%</span>
               </div>
             </li>
           </ul>

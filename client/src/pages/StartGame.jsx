@@ -1,13 +1,14 @@
-import React from 'react'
+import React from "react";
 
-import Animation from '../components/Animation'
+import Animation from "../components/Animation";
+import Categories from "../components/Categories";
 
 const StartGame = () => {
   return (
     <Animation>
-      <div>StartGame</div>
+      <Categories />
     </Animation>
-  )
-}
+  );
+};
 
-export default StartGame
+export default StartGame;

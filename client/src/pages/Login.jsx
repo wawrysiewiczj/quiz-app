@@ -6,6 +6,8 @@ import {
   loginFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Animation from "../components/Animation";
 import OAuth from "../components/OAuth";
@@ -33,17 +35,26 @@ const Login = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(loginFailure(data));
+        toast.error("Login failed: " + data.message);
         return;
       }
       dispatch(loginSuccess(data));
       navigate("/apps/quiz-app-new/");
+
+      toast.success("Login successful!");
     } catch (error) {
       dispatch(loginFailure(error));
+      toast.error("An error occurred: " + error.message);
     }
   };
 
   return (
     <Animation>
+      <ToastContainer
+        autoClose={5000}
+        draggablePercent={60}
+        position="top-right"
+      />
       <div className="">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-800">
           Sign in to your account
@@ -111,10 +122,6 @@ const Login = () => {
             <OAuth />
           </div>
         </form>
-
-        <p className="text-red-600 mt-2">
-          {error ? error.message || "Something went wrong" : ""}
-        </p>
       </div>
     </Animation>
   );

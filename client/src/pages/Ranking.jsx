@@ -22,8 +22,6 @@ const Ranking = () => {
       { name: "Eve", score: 900 },
       { name: "Eve", score: 900 },
       { name: "Eve", score: 900 },
-      { name: "Eve", score: 900 },
-      { name: "Eve", score: 900 },
     ],
   };
 
@@ -35,8 +33,6 @@ const Ranking = () => {
     ],
     others: [
       { name: "Walt", score: 2700 },
-      { name: "Victor", score: 2600 },
-      { name: "Victor", score: 2600 },
       { name: "Victor", score: 2600 },
       { name: "Victor", score: 2600 },
       { name: "Victor", score: 2600 },
@@ -107,8 +103,10 @@ const Ranking = () => {
                 />
 
                 <div className="flex flex-col">
-                  <span>{person.name}</span>
-                  <span>{person.score}</span>
+                  <span className="text-md font-bold">{person.name}</span>
+                  <span className="text-sm text-gray-500 font-semibold">
+                    {person.score} points
+                  </span>
                 </div>
               </div>
             </div>

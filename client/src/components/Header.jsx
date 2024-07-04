@@ -31,7 +31,7 @@ const Header = () => {
       case "/apps/quiz-app-new/profile":
         return "Profile";
       case "/apps/quiz-app-new/start-game":
-        return "Start Game";
+        return "Choose category";
       case "/apps/quiz-app-new/create-quiz":
         return "Create Quiz";
       default:
@@ -40,7 +40,7 @@ const Header = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 bg-gray-100 w-full py-1.5 px-4 shadow-sm backdrop-blur-lg bg-opacity-50 z-50">
+    <div className="fixed top-0 left-0 bg-gray-200 w-full py-1.5 px-4 shadow-sm backdrop-blur-lg bg-opacity-50 z-50">
       <div className={`flex justify-between items-center max-w-3xl mx-auto`}>
         {currentUser ? (
           <Link to="/apps/quiz-app-new/" className={`${headerIconClassName}`}>
@@ -50,7 +50,7 @@ const Header = () => {
           <div className={headerIconClassName} />
         )}
 
-        <h1 className="px-3 py-3 text-lg font-semibold">{getTitle()}</h1>
+        <h2 className="px-3 py-2 text-lg font-semibold">{getTitle()}</h2>
         {currentUser ? (
           <Link
             to="/apps/quiz-app-new/notifications"
