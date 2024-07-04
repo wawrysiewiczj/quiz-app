@@ -2,100 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import Animation from "../components/Animation";
 import { motion as m } from "framer-motion";
-
-const conversations = [
-  {
-    id: 1,
-    name: "Jane Smith",
-    imageurl:
-      "https://plus.unsplash.com/premium_photo-1661315514682-e093b4a30af5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    lastactive: "2 hours ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Jane Smith",
-        content: "Hey, how are you?",
-        timestamp: "10:30 AM",
-      },
-      {
-        id: 2,
-        sender: "Me",
-        content: "I am good, thanks! How about you?",
-        timestamp: "10:32 AM",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "QuizApp Support",
-    imageurl: "https://www.zert.se/wp-content/uploads/2019/08/Support.png",
-    lastactive: "3 seconds ago",
-    messages: [
-      {
-        id: 1,
-        sender: "QuizApp Support",
-        content: "Your password was successfully changed.",
-        timestamp: "Yesterday",
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "John Doe",
-    imageurl:
-      "https://images.unsplash.com/photo-1719430074740-a5ee49a67d45?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    lastactive: "10 minutes ago",
-    messages: [
-      {
-        id: 1,
-        sender: "John Doe",
-        content: "I enjoyed your quiz on Science Facts!",
-        timestamp: "2 days ago",
-      },
-    ],
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import {
+  sendMessageStart,
+  sendMessageSuccess,
+  sendMessageFailure,
+  receiveMessageStart,
+  receiveMessageSuccess,
+  receiveMessageFailure,
+} from "../redux/message/messageSlice";
 
 const Messages = () => {
-  const [selectedConversation, setSelectedConversation] = useState(
-    conversations[0]
-  );
-  const [newMessage, setNewMessage] = useState("");
-  const messageContainerRef = useRef(null);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
+  const { message } = useSelector((state) => state.message);
 
-  const handleSendMessage = () => {
-    if (newMessage) {
-      const updatedConversations = conversations.map((conversation) =>
-        conversation.id === selectedConversation.id
-          ? {
-              ...conversation,
-              messages: [
-                ...conversation.messages,
-                {
-                  id: conversation.messages.length + 1,
-                  sender: "Me",
-                  content: newMessage,
-                  timestamp: "Now",
-                },
-              ],
-            }
-          : conversation
-      );
-      setSelectedConversation({
-        ...selectedConversation,
-        messages: [
-          ...selectedConversation.messages,
-          {
-            id: selectedConversation.messages.length + 1,
-            sender: "Me",
-            content: newMessage,
-            timestamp: "Now",
-          },
-        ],
-      });
-      setNewMessage("");
-    }
-  };
+  const [newMessage, setNewMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const messageContainerRef = useRef(null);
 
   useEffect(() => {
     // Function to scroll to the bottom of the message container
@@ -108,90 +33,154 @@ const Messages = () => {
 
     // Scroll to bottom when messages change or initially loaded
     scrollToBottom();
-  }, [selectedConversation.messages]);
+  });
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        console.log("Fetching messages...");
+        dispatch(receiveMessageStart());
+
+        const res = await fetch(`/api/messages`);
+        if (!res.ok) {
+          throw new Error(`Error fetching messages: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        console.log("Fetched messages:", data);
+
+        dispatch(receiveMessageSuccess(data));
+        setMessages(data);
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+        dispatch(receiveMessageFailure(error));
+      }
+    };
+
+    fetchMessages();
+  }, [dispatch]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newMessage.trim() === "") return;
+
+    try {
+      dispatch(sendMessageStart());
+      const res = await fetch(`/api/messages/send/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: newMessage }),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(sendMessageFailure(data));
+        return;
+      }
+      dispatch(sendMessageSuccess(data));
+      setMessages([...messages, data]); // Add the new message to the local state
+      setNewMessage("");
+    } catch (error) {
+      dispatch(sendMessageFailure(error));
+    }
+  };
 
   return (
     <Animation>
-      <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-48 ">
+      <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-40 ">
         <div className="max-w-3xl mx-auto h-full flex flex-col">
-          {/* Conversations List */}
-          <ul className="flex gap-2">
-            {conversations.map((conversation) => (
-              <li
-                key={conversation.id}
-                className={`p-1 rounded-full cursor-pointer ${
-                  selectedConversation.id === conversation.id
-                    ? "bg-violet-300"
-                    : "bg-gray-100"
-                } text-gray-700`}
-                onClick={() => setSelectedConversation(conversation)}
-              >
-                <div className="relative">
-                  <img
-                    className="w-12 h-12 rounded-full object-cover object-center"
-                    src={conversation.imageurl}
-                    alt=""
-                  />
-                  <span className="bottom-0 left-7 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
-                </div>
-              </li>
-            ))}
-          </ul>
-
           {/* Selected Conversation */}
-          <div className="h-full mt-2 pb-8">
+          <div className="h-full mt-2">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-800">
-                {selectedConversation.name}
+                Global Chat
               </h3>
-              <p className="rounded-lg text-sm">
-                {selectedConversation.lastactive}
-              </p>
+              <p className="rounded-lg text-sm">lastactive</p>
             </div>
             <div
               className="border-t border-gray-300 pt-2 h-full animate duration-300 overflow-y-scroll mt-2"
               ref={messageContainerRef}
             >
-              {selectedConversation.messages.map((message, index) => (
-                <m.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  key={message.id}
-                  className={`mb-2 ${
-                    message.sender === "Me" ? "text-right" : "text-left"
-                  }`}
-                >
-                  <p
-                    className={`inline-block p-4 py-3 rounded-lg text-sm ${
-                      message.sender === "Me"
-                        ? "bg-red-300 text-gray-800"
-                        : "bg-gray-100 text-gray-800"
+              {messages.length > 0 ? (
+                messages.map((message) => (
+                  <m.div
+                    key={message._id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className={`flex items-end gap-1 mb-2 ${
+                      message.senderId === currentUser._id
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
-                    {message.content}
-                  </p>
-                  <p className="text-xs text-gray-500">{message.timestamp}</p>
-                </m.div>
-              ))}
+                    {message.senderId !== currentUser._id && (
+                      <img
+                        className="w-6 h-6 rounded-full object-cover object-center"
+                        src={message.senderPhoto}
+                        alt={`${message.senderUsername}'s profile`}
+                      />
+                    )}
+
+                    <div
+                      className={`flex flex-col max-w-xs  ${
+                        message.senderId === currentUser._id
+                          ? "items-end"
+                          : "items-start"
+                      }`}
+                    >
+                      <h3
+                        className={`text-xs text-gray-600 ${
+                          message.senderId === currentUser._id
+                            ? " me-2"
+                            : " ms-2"
+                        }`}
+                      >
+                        {message.senderUsername}
+                      </h3>
+                      <p
+                        className={`text-sm rounded-xl px-3 py-2  ${
+                          message.senderId === currentUser._id
+                            ? "bg-red-300 text-gray-800 self-end"
+                            : "bg-gray-300 text-gray-800 "
+                        }`}
+                      >
+                        {message.message}
+                      </p>
+                      <p
+                        className={`text-xs text-gray-500 hidden ${
+                          message.senderId === currentUser._id
+                            ? " me-2"
+                            : " ms-2"
+                        }`}
+                      >
+                        {new Date(message.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </m.div>
+                ))
+              ) : (
+                <p>No messages found.</p>
+              )}
             </div>
             <div className="flex px-4 w-full left-0 fixed bottom-16">
-              <div className="max-w-3xl mx-auto w-full flex">
+              <form
+                onSubmit={handleSubmit}
+                className="max-w-3xl mx-auto w-full flex"
+              >
                 <input
                   type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
                   className="flex-1 bg-gray-100 text-gray-700 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                   placeholder="Message"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <button
-                  onClick={handleSendMessage}
-                  className="flex justify-center items-center ml-2 bg-violet-600 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
+                <button className="flex justify-center items-center ml-2 bg-violet-600 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <PaperAirplaneIcon className="w-5 h-5 inline" />
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
