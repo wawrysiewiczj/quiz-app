@@ -222,7 +222,7 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring rind-1 ring-violet-400">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
                 <span>100%</span>
               </div>
             </li>
@@ -236,7 +236,7 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring rind-1 ring-violet-400">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
                 <span>100%</span>
               </div>
             </li>
@@ -250,7 +250,7 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring rind-1 ring-violet-400">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
                 <span>100%</span>
               </div>
             </li>
@@ -264,7 +264,7 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring rind-1 ring-violet-400">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-400">
                 <span>100%</span>
               </div>
             </li>

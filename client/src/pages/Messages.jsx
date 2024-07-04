@@ -92,7 +92,7 @@ const Messages = () => {
 
   return (
     <Animation>
-      <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-40 ">
+      <div className="h-full w-full fixed bottom-0 left-0 pt-20 px-4 pb-28 ">
         <div className="max-w-3xl mx-auto h-full flex flex-col">
           {/* Selected Conversation */}
           <div className="h-full">
@@ -130,18 +130,18 @@ const Messages = () => {
                       }`}
                     >
                       <h3
-                        className={`text-xs text-gray-600 ${
+                        className={`text-xs text-gray-500 mb-0.5 ${
                           message.senderId === currentUser._id
-                            ? " me-2"
-                            : " ms-2"
+                            ? " me-3"
+                            : " ms-3"
                         }`}
                       >
                         {message.senderUsername}
                       </h3>
                       <p
-                        className={`text-sm rounded-3xl px-3 py-2  ${
+                        className={`text-md rounded-2xl px-3 py-2  ${
                           message.senderId === currentUser._id
-                            ? "bg-red-300 text-gray-800 self-end"
+                            ? "bg-red-300 text-gray-800 self-end "
                             : "bg-gray-300 text-gray-800 "
                         }`}
                       >
