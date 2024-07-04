@@ -16,10 +16,20 @@ import CreateQuiz from "./pages/CreateQuiz";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import EditProfile from "./pages/EditProfile";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
+      <ToastContainer
+        autoClose={5000}
+        stacked
+        draggablePercent={60}
+        position="top-right"
+      />
       <Routes>
         <Route path="/*" element={<Start />} />
         <Route path="/apps/quiz-app-new/start" element={<Start />} />
@@ -28,6 +38,10 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/apps/quiz-app-new/" element={<Home />} />
           <Route path="/apps/quiz-app-new/profile" element={<Profile />} />
+          <Route
+            path="/apps/quiz-app-new/edit-profile"
+            element={<EditProfile />}
+          />
           <Route path="/apps/quiz-app-new/start-game" element={<StartGame />} />
           <Route path="/apps/quiz-app-new/ranking" element={<Ranking />} />
           <Route path="/apps/quiz-app-new/messages" element={<Messages />} />

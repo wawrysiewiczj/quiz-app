@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 import Animation from "../components/Animation";
 import OAuth from "../components/OAuth";
@@ -30,7 +29,7 @@ const SignUp = () => {
       setLoading(false);
       if (data.success === false) {
         setError(true);
-        toast.error("Sign-up failed: " + data.message);
+        toast.error(data.message);
         return;
       }
       navigate("/apps/quiz-app-new/login");
@@ -39,17 +38,12 @@ const SignUp = () => {
     } catch (error) {
       setLoading(false);
       setError(true);
-      toast.error("An error occurred during sign-up: " + error.message);
+      toast.error(error.message);
     }
   };
 
   return (
     <Animation>
-      <ToastContainer
-        autoClose={5000}
-        draggablePercent={60}
-        position="top-right"
-      />
       <div className="">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-800">
           Sign up

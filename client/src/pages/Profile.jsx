@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -10,10 +8,10 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { toast } from "react-toastify";
 
 import {
   AcademicCapIcon,
-  ChevronRightIcon,
   PencilSquareIcon,
   XMarkIcon,
   Cog8ToothIcon,
@@ -21,9 +19,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 // import components
-import ButtonError from "../components/ButtonError";
 import ButtonPrimary from "../components/ButtonPrimary";
-import ButtonSecondary from "../components/ButtonSecondary";
 import Animation from "../components/Animation";
 
 import {
@@ -35,6 +31,7 @@ import {
   updateUserStart,
   updateUserSuccess,
 } from "../redux/user/userSlice";
+import ButtonSecondary from "../components/ButtonSecondary";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -46,6 +43,7 @@ const Profile = () => {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [formData, setFormData] = useState({});
+  const [dragging, setDragging] = useState(false); // State for drag indicator
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
 
@@ -69,7 +67,7 @@ const Profile = () => {
       },
       (error) => {
         setImageUploadError(true);
-        toast.error("Image upload failed!");
+        toast.error("Error Image upload (image must be less than 2 mb)");
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -79,6 +77,7 @@ const Profile = () => {
       }
     );
   };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -96,7 +95,7 @@ const Profile = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(updateUserFailure(data));
-        toast.error("User update failed!");
+        toast.error(error.message);
         return;
       }
       dispatch(updateUserSuccess(data));
@@ -104,7 +103,7 @@ const Profile = () => {
       toast.success("User updated successfully!");
     } catch (error) {
       dispatch(updateUserFailure(error));
-      toast.error("An error occurred during user update!");
+      toast.error(error.message);
     }
   };
 
@@ -117,14 +116,14 @@ const Profile = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data));
-        toast.error("Account deletion failed!");
+        toast.error(error.message);
         return;
       }
       dispatch(deleteUserSuccess(data));
       toast.success("Account deleted successfully!");
     } catch (error) {
       dispatch(deleteUserFailure(error));
-      toast.error("An error occurred during account deletion!");
+      toast.error(error.message);
     }
   };
 
@@ -133,10 +132,8 @@ const Profile = () => {
       await fetch("/api/auth/signout");
       dispatch(signOut());
       navigate("/apps/quiz-app-new/start");
-      dispatch(signOut);
-      toast.success("Signed out successfully!");
     } catch (error) {
-      toast.error("An error occurred during sign out!");
+      toast.error(error.message);
       console.log(error);
     }
   };
@@ -151,13 +148,29 @@ const Profile = () => {
     handleSubmit();
   };
 
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    setImage(droppedFile);
+  };
+
+  const handleFileInputChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   return (
     <Animation>
-      <ToastContainer
-        autoClose={5000}
-        draggablePercent={60}
-        position="top-right"
-      />
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
         <div className="col-span-4 rounded-xl p-3 bg-gray-100 flex flex-col gap-2">
@@ -330,83 +343,108 @@ const Profile = () => {
         </div>
       </div>
 
-      {ShowModalEditProfile ? (
-        <Animation>
-          <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-full px-6 mx-auto max-w-3xl">
-              <div className="p-3 rounded-lg shadow-lg relative flex flex-col w-full border border-1 border-gray-300 bg-gray-100 outline-none focus:outline-none">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold">Edit profile</h3>
-                  <button
-                    className="bg-transparent border-0 text-black float-right"
-                    onClick={() => setShowModalEditProfile(false)}
-                  >
-                    <span className="text-black opacity-7 text-xl block p-2 rounded-full">
-                      <XMarkIcon className="size-6 text-gray-700" />
-                    </span>
-                  </button>
-                </div>
-                <form
-                  onSubmit={handleSubmit}
-                  className="w-full flex flex-col gap-2 my-2"
-                >
-                  <input
-                    type="file"
-                    ref={fileRef}
-                    accept="image/*"
-                    onChange={(e) => setImage(e.target.files[0])}
-                  />
-                  <p className="text-sm">
-                    {imageUploadError ? (
-                      <span className="text-red-700">
-                        Error uploading image (file size must be less than 2 MB)
-                      </span>
-                    ) : imageUploadProgress > 0 && imageUploadProgress < 100 ? (
-                      <span className="text-slate-700">{`Uploading: ${imageUploadProgress} %`}</span>
-                    ) : imageUploadProgress === 100 ? (
-                      <span className="text-green-700">
-                        Image uploaded successfully
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                  <input
-                    defaultValue={currentUser.username}
-                    type="text"
-                    id="username"
-                    placeholder="Your name"
-                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
-                  <input
-                    defaultValue={currentUser.email}
-                    type="text"
-                    id="email"
-                    placeholder="Email"
-                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                    className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
-                  <div className="flex gap-2">
-                    <ButtonPrimary
-                      type="submit"
-                      text={loading ? "Loading..." : "Save"}
-                      onClick={handleButtonEventUpdate}
-                    ></ButtonPrimary>
-                  </div>
-                </form>
-              </div>
+      {/* Edit Profile Modal */}
+      {ShowModalEditProfile && (
+        <div className="fixed flex top-0 left-0 bg-gray-200 w-full py-1.5 px-4 shadow-sm backdrop-blur-lg bg-opacity-50 inset-0 z-50">
+          <div className="w-full flex flex-col max-w-3xl mx-auto mt-">
+            <div className="flex items-center justify-between">
+              <Link
+                className="animate duration-300 w-auto gap-x-1 rounded-xl px-3 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                onClick={() => setShowModalEditProfile(false)}
+              >
+                <XMarkIcon className="size-6 text-gray-700" />
+              </Link>
             </div>
+            <form
+              onSubmit={handleSubmit}
+              className="w-full flex flex-col gap-2 mt-16"
+            >
+              <div
+                className={`w-full h-40 border-dashed border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center ${
+                  dragging ? "bg-gray-100" : ""
+                }`}
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileRef.current.click()}
+              >
+                <input
+                  id="profile-photo-input"
+                  type="file"
+                  ref={fileRef}
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                />
+                <img
+                  src={formData.profilePhoto || currentUser.profilePhoto}
+                  alt="profile"
+                  className="rounded-full h-24 w-24 object-cover cursor-pointer self-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                />
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-700">
+                    {dragging
+                      ? "Drop the image here"
+                      : "Drag & drop image here, or click to select"}
+                  </p>
+                </div>
+                <p className="text-sm self-center">
+                  {imageUploadError ? (
+                    <span className="text-red-700">
+                      Error Image upload (image must be less than 2 mb)
+                    </span>
+                  ) : imageUploadProgress > 0 && imageUploadProgress < 100 ? (
+                    <span className="text-slate-700">{`Uploading ${imageUploadProgress}%`}</span>
+                  ) : imageUploadProgress === 100 ? (
+                    <span className="text-green-700">
+                      Image successfully uploaded!
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </p>
+              </div>
+              <input
+                defaultValue={currentUser.username}
+                type="text"
+                id="username"
+                placeholder="Your name"
+                className="flex-1 w-full bg-white bg-opacity-50 placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                onChange={handleChange}
+              />
+              <input
+                defaultValue={currentUser.email}
+                type="text"
+                id="email"
+                placeholder="Email"
+                className="flex-1 w-full bg-white bg-opacity-50 placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                onChange={handleChange}
+              />
+              <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                className="mb-4 flex-1 w-full bg-white bg-opacity-50 placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                onChange={handleChange}
+              />
+              {/* Buttons */}
+              <div className="flex justify-end space-x-4">
+                <ButtonSecondary
+                  type="button"
+                  text="Cancel"
+                  onClick={() => setShowModalEditProfile(false)}
+                />
+                <ButtonPrimary
+                  type="submit"
+                  text={loading ? "Loading..." : "Save"}
+                  onClick={handleButtonEventUpdate}
+                />
+              </div>
+            </form>
           </div>
-        </Animation>
-      ) : null}
+        </div>
+      )}
     </Animation>
   );
 };

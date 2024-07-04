@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Switch } from "@headlessui/react";
 import Animation from "../components/Animation";
+import { toast } from "react-toastify";
 
 import {
   deleteUserFailure,
@@ -28,11 +29,13 @@ const Settings = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data));
+        toast.error(error.message);
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error));
+      toast.error(error.message);
     }
   };
 
