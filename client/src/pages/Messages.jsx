@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  PaperAirplaneIcon,
-  ChevronLeftIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import Animation from "../components/Animation";
+import SkeletonMessage from "../components/SkeletonMessage";
 import { motion as m } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,7 +16,13 @@ import {
 const Messages = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  const { message } = useSelector((state) => state.message);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Symulacja ładowania danych
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -88,6 +91,20 @@ const Messages = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div>
+        {/* Wyświetlanie kilku szkieletów wiadomości */}
+        <SkeletonMessage isSender={false} />
+        <SkeletonMessage isSender={true} />
+        <SkeletonMessage isSender={false} />
+        <SkeletonMessage isSender={false} />
+        <SkeletonMessage isSender={true} />
+        <SkeletonMessage isSender={false} />
+      </div>
+    );
+  }
+
   return (
     <Animation>
       <div className="h-full w-full fixed bottom-0 left-0 pt-14 pb-28 ">
@@ -101,68 +118,60 @@ const Messages = () => {
               <div className="flex justify-center items-start py-8">
                 <h2>Chat for everyone</h2>
               </div>
-              {messages.length > 0 ? (
-                messages.map((message) => (
-                  <m.div
-                    key={message._id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    className={`flex items-end gap-1 mb-1 px-4 ${
+              {messages.map((message) => (
+                <m.div
+                  key={message._id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.75, ease: "easeOut" }}
+                  className={`flex items-end gap-1 mb-1 px-4 ${
+                    message.senderId === currentUser._id
+                      ? "justify-end"
+                      : "justify-start"
+                  }`}
+                >
+                  {message.senderId !== currentUser._id && (
+                    <img
+                      className="w-6 h-6 rounded-full object-cover object-center"
+                      src={message.senderPhoto}
+                      alt={`${message.senderUsername}'s profile`}
+                    />
+                  )}
+
+                  <div
+                    className={`flex flex-col max-w-xs ${
                       message.senderId === currentUser._id
-                        ? "justify-end"
-                        : "justify-start"
+                        ? "items-end"
+                        : "items-start"
                     }`}
                   >
-                    {message.senderId !== currentUser._id && (
-                      <img
-                        className="w-6 h-6 rounded-full object-cover object-center"
-                        src={message.senderPhoto}
-                        alt={`${message.senderUsername}'s profile`}
-                      />
-                    )}
-
-                    <div
-                      className={`flex flex-col max-w-xs  ${
-                        message.senderId === currentUser._id
-                          ? "items-end"
-                          : "items-start"
+                    <h3
+                      className={`text-xs text-gray-500 mb-0.5 ${
+                        message.senderId === currentUser._id ? "me-3" : "ms-3"
                       }`}
                     >
-                      <h3
-                        className={`text-xs text-gray-500 mb-0.5 ${
-                          message.senderId === currentUser._id
-                            ? " me-3"
-                            : " ms-3"
-                        }`}
-                      >
-                        {message.senderUsername}
-                      </h3>
-                      <p
-                        className={`text-md rounded-2xl px-3 py-2  ${
-                          message.senderId === currentUser._id
-                            ? "bg-red-300 text-gray-800 self-end "
-                            : "bg-gray-300 text-gray-800 "
-                        }`}
-                      >
-                        {message.message}
-                      </p>
-                      <p
-                        className={`text-xs text-gray-500 hidden ${
-                          message.senderId === currentUser._id
-                            ? " me-2"
-                            : " ms-2"
-                        }`}
-                      >
-                        {new Date(message.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-                  </m.div>
-                ))
-              ) : (
-                <p>No messages found.</p>
-              )}
+                      {message.senderUsername}
+                    </h3>
+                    <p
+                      className={`text-md rounded-2xl px-3 py-2 ${
+                        message.senderId === currentUser._id
+                          ? "bg-red-300 text-gray-800 self-end"
+                          : "bg-gray-300 text-gray-800"
+                      }`}
+                    >
+                      {message.message}
+                    </p>
+                    <p
+                      className={`text-xs text-gray-500 hidden ${
+                        message.senderId === currentUser._id ? "me-2" : "ms-2"
+                      }`}
+                    >
+                      {new Date(message.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                </m.div>
+              ))}
             </div>
             <div className="flex px-4 w-full left-0 fixed bottom-16">
               <form
