@@ -23,6 +23,16 @@ const Settings = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
 
   const handleDeleteAccount = async () => {
+    // Dodajemy okno dialogowe do potwierdzenia
+    const confirmDelete = window.confirm(
+      "You sure you want to delete you account?"
+    );
+
+    if (!confirmDelete) {
+      // Jeśli użytkownik kliknie "Anuluj", przerwij operację
+      return;
+    }
+
     try {
       dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
@@ -31,7 +41,7 @@ const Settings = () => {
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data));
-        toast.error(error.message);
+        toast.error(data.message);
         return;
       }
       dispatch(deleteUserSuccess(data));
