@@ -22,13 +22,16 @@ const Home = () => {
           <h2 className="text-3xl font-semibold tracking-tight mb-4">
             Hi, {currentUser.username}!
           </h2>
-          <p className="text-sm text-gray-800">
+          <p className="text-sm text-gray-800 dark:text-gray-200">
             Test your skills against friends and family using QuizApp and
             improve your skills day by day.
           </p>
         </div>
         <div className="grid grid-col-4 gap-2">
-          <Link to="/apps/quiz-app-new/profile" className={classLinkPrimary}>
+          <Link
+            to="/apps/quiz-app-new/profile"
+            className="animate duration-300 col-span-4 w-full flex justify-between items-center rounded-xl px-3.5 py-2.5 bg-gray-900 dark:bg-gray-100 shadow-sm text-white hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+          >
             <div>
               <h3 className="text-xl font-semibold tracking-tight mb-2">
                 Your Profile

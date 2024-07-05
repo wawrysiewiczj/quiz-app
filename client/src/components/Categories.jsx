@@ -63,10 +63,10 @@ const Categories = () => {
           <Link
             key={index}
             to={category.to}
-            className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5 hover:bg-red-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-sm px-3.5 py-2.5 hover:bg-red-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           >
             <div className="flex items-center overflow-hidden">
-              <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
+              <span className="rounded-xl bg-violet-300 dark:bg-violet-700 p-3 bg-opacity-70">
                 <AcademicCapIcon className="h-6 w-6" />
               </span>
             </div>

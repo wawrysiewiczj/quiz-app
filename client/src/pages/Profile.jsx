@@ -12,6 +12,7 @@ import {
 import Animation from "../components/Animation";
 import EditProfile from "../components/EditProfile";
 import Settings from "../components/Settings";
+import MyQuizzes from "../components/MyQuizzes";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const Profile = () => {
     <Animation>
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
-        <div className="col-span-4 rounded-xl p-3 bg-gray-100 dark:bg-gray-900 flex flex-col gap-2">
+        <div className="col-span-4 rounded-xl p-3 text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-900 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
             <img
               className="w-16 h-16 rounded-full object-cover cursor-pointer"
@@ -42,10 +43,8 @@ const Profile = () => {
               alt="Profile Poto"
             />
             <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-semibold text-gray-800">
-                {currentUser.username}
-              </h3>
-              <p className="text-gray-700 text-sm">{currentUser.email}</p>
+              <h3 className="text-2xl font-semibold">{currentUser.username}</h3>
+              <p className="text-sm">{currentUser.email}</p>
             </div>
           </div>
           <div className="flex items-center">
@@ -53,19 +52,17 @@ const Profile = () => {
             <Settings />
             <Link
               onClick={handleSignOut}
-              className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl p-2 text-md font-semibold text-violet-500 hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl p-2 text-md font-semibold hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
-              <ArrowRightStartOnRectangleIcon className="size-5 text-gray-700" />
+              <ArrowRightStartOnRectangleIcon className="size-5 " />
             </Link>
           </div>
         </div>
 
         {/* Quiz Statistics */}
-        <div className="col-span-4 bg-gray-100 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">
-            Quiz Statistics
-          </h3>
-          <div className="grid grid-cols-3 gap-2 text-gray-700">
+        <div className="col-span-4 text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
+          <h3 className="text-xl font-bold mb-4">Quiz Statistics</h3>
+          <div className="grid grid-cols-3 gap-2 ">
             <div>
               <h4 className="text-2xl font-bold text-violet-500">15</h4>
               <p className="text-sm">Quizzes Taken</p>
@@ -82,14 +79,12 @@ const Profile = () => {
         </div>
 
         {/* Completed Quizzes */}
-        <div className="col-span-4 bg-gray-100 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">
-            Completed Quizzes
-          </h3>
-          <ul className="text-gray-700 grid grid-cols-4 gap-2">
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
+        <div className="col-span-4 bg-gray-100 dark:bg-gray-900 dark:text-gray-100 rounded-xl shadow-sm p-4 text-center">
+          <h3 className="text-xl font-bold mb-4">Completed Quizzes</h3>
+          <ul className="grid grid-cols-4 gap-2">
+            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 dark:bg-green-700 dark:text-gray-100 rounded-xl shadow-sm px-3.5 py-2.5">
               <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
+                <span className="rounded-xl bg-violet-300 dark:bg-violet-800 p-3 bg-opacity-70">
                   <AcademicCapIcon className="h-6 w-6" />
                 </span>
               </div>
@@ -97,7 +92,7 @@ const Profile = () => {
                 <h3 className="text-md font-semibold leading-6">Math</h3>
                 <p className="text-sm font-semibold">Level 1</p>
               </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300">
+              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300 dark:ring-green-500">
                 <span>100%</span>
               </div>
             </li>
@@ -146,51 +141,10 @@ const Profile = () => {
           </ul>
         </div>
 
-        {/* Favorite Quizzes */}
-        <div className="col-span-4 bg-gray-100 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">My Quizzes</h3>
-          <ul className="text-gray-700 grid grid-cols-4 gap-2">
-            <li className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <h3 className="text-md font-semibold leading-6">Math</h3>
-              <p className="text-sm font-semibold">Level 1</p>
-              <span className="text-sm opacity-70">90%</span>
-            </li>
-            <li className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <h3 className="text-md font-semibold leading-6">Math</h3>
-              <p className="text-sm font-semibold">Level 1</p>
-              <span className="text-sm opacity-70">90%</span>
-            </li>
-            <li className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <h3 className="text-md font-semibold leading-6">Math</h3>
-              <p className="text-sm font-semibold">Level 1</p>
-              <span className="text-sm opacity-70">90%</span>
-            </li>
-            <li className="animate duration-300 flex flex-col justify-center items-center col-span-2 bg-gray-200 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <h3 className="text-md font-semibold leading-6">Math</h3>
-              <p className="text-sm font-semibold">Level 1</p>
-              <span className="text-sm opacity-70">90%</span>
-            </li>
-          </ul>
+        {/* My Quizzes */}
+        <div className="col-span-4 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
+          <h3 className="text-xl font-bold mb-4">My Quizzes</h3>
+          <MyQuizzes />
         </div>
       </div>
     </Animation>

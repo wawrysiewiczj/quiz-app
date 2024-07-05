@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
-import userQuizzesRoutes from "./routes/userquiz.route.js";
+import quizRoutes from "./routes/quiz.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 
@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
-app.use("/api/quizzes", userQuizzesRoutes);
+app.use("/api/quiz", quizRoutes);
 
 // Obsługa błędów
 app.use((err, req, res, next) => {

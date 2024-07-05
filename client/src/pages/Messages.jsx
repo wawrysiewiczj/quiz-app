@@ -159,8 +159,8 @@ const Messages = () => {
                       <p
                         className={`text-md rounded-2xl px-3 py-2  ${
                           message.senderId === currentUser._id
-                            ? "bg-red-300 text-gray-800 self-end "
-                            : "bg-gray-300 text-gray-800 "
+                            ? "bg-blue-300 text-gray-800 dark:bg-blue-500 dark:text-gray-100 self-end "
+                            : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-100"
                         }`}
                       >
                         {message.message}
@@ -194,7 +194,7 @@ const Messages = () => {
                 </button> */}
                 <input
                   type="text"
-                  className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                  className="flex-1 bg-white dark:bg-gray-900 placeholder:text-gray-500 dark:placeholder:text-gray-400 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                   placeholder="Aa"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}

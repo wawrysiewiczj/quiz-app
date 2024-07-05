@@ -6,8 +6,8 @@ const initialState = {
   userQuizzes: [],
 };
 
-const userQuizSlice = createSlice({
-  name: "userQuiz",
+const userquizSlice = createSlice({
+  name: "userquiz",
   initialState,
   reducers: {
     fetchUserQuizzesStart: (state) => {
@@ -64,6 +64,6 @@ export const {
   deleteUserQuizStart,
   deleteUserQuizSuccess,
   deleteUserQuizFailure,
-} = userQuizSlice.actions;
+} = userquizSlice.actions;
 
-export default userQuizSlice.reducer;
+export default userquizSlice.reducer;

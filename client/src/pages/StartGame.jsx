@@ -11,12 +11,12 @@ const StartGame = () => {
 
   return (
     <Animation>
-      <div className="mb-4 p-1 mx-auto flex justify-center bg-gray-100 rounded-full">
+      <div className="mb-4 p-1 mx-auto flex justify-center bg-gray-100 dark:bg-gray-900 rounded-full">
         <button
           onClick={() => setActiveTab("categories")}
           className={`animate duration-200 w-full px-4 py-1 font-semibold rounded-2xl ${
             activeTab === "categories"
-              ? "bg-violet-200 text-violet-800"
+              ? "bg-violet-200 text-violet-800 dark:bg-violet-800 dark:text-gray-100"
               : "bg-transparent"
           }`}
         >
@@ -26,7 +26,7 @@ const StartGame = () => {
           onClick={() => setActiveTab("userQuizzes")}
           className={`animate duration-200 w-full px-4 py-1 font-semibold rounded-2xl ${
             activeTab === "userQuizzes"
-              ? "bg-violet-200 text-violet-800"
+              ? "bg-violet-200 text-violet-800 dark:bg-violet-800 dark:text-gray-100"
               : "bg-transparent "
           }`}
         >

@@ -1,10 +1,10 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
 import messageReducer from "./message/messageSlice";
-import userQuizReducer from "./userquiz/userQuizSlice";
-import { persistReducer } from "redux-persist";
+import userquizReducer from "./userquiz/userquizSlice";
+import themeReducer from "./theme/themeSlice";
+import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import persistStore from "redux-persist/es/persistStore";
 import {
   createStateSyncMiddleware,
   initMessageListener,
@@ -13,7 +13,8 @@ import {
 const rootReducer = combineReducers({
   user: userReducer,
   message: messageReducer,
-  userQuiz: userQuizReducer,
+  userQuiz: userquizReducer,
+  theme: themeReducer,
 });
 
 const persistConfig = {

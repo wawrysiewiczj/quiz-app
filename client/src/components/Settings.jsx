@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Switch } from "@headlessui/react";
 import { toast } from "react-toastify";
 import { Drawer } from "vaul";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 
@@ -18,8 +19,12 @@ const Settings = () => {
   const [enabled3, setEnabled3] = useState(false);
   const [enabled4, setEnabled4] = useState(false);
   const dispatch = useDispatch();
-
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   const handleDeleteAccount = async () => {
     // Dodajemy okno dialogowe do potwierdzenia
@@ -54,14 +59,14 @@ const Settings = () => {
     <Drawer.Root>
       <Drawer.Trigger asChild>
         <button className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl p-2 text-md font-semibold text-violet-500 hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-          <Cog8ToothIcon className="size-5 text-gray-700" />
+          <Cog8ToothIcon className="size-5 text-gray-800 dark:text-gray-200" />
         </button>
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-        <Drawer.Content className="bg-gray-100 flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 max-h-[80%]">
-          <div className="p-4 bg-gray-100 rounded-t-[10px] pb-24 flex-1 overflow-auto">
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-zinc-300 mb-8" />
+        <Drawer.Content className="bg-gray-100 dark:bg-gray-900 flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 max-h-[80%]">
+          <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-t-[10px] pb-24 flex-1 overflow-auto">
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-700 mb-8" />
             <div className="max-w-md mx-auto">
               <Drawer.Title className="font-medium text-center">
                 Settings
@@ -73,8 +78,8 @@ const Settings = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-gray-800">Dark Mode</span>
                     <Switch
-                      checked={enabled1}
-                      onChange={setEnabled1}
+                      checked={theme === "dark"}
+                      onChange={handleThemeToggle}
                       className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"
                     >
                       <span className="animate duration-200 size-4 translate-x-1 rounded-full bg-gray-200 transition group-data-[checked]:translate-x-6" />

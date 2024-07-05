@@ -1,110 +1,143 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
-const QuizForm = () => {
-  const [title, setTitle] = useState("");
-  const [questions, setQuestions] = useState([
-    { content: "", answers: ["", "", "", ""], correctAnswerIndex: 0 },
-  ]);
+const CreateQuiz = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ title: "", questions: [] });
+  const [createError, setCreateError] = useState(null);
 
-  const handleQuestionChange = (index, event) => {
-    const { name, value } = event.target;
-    const newQuestions = [...questions];
-    newQuestions[index][name] = value;
-    setQuestions(newQuestions);
+  const handleTitleChange = (e) => {
+    setFormData({ ...formData, title: e.target.value });
   };
 
-  const handleAnswerChange = (questionIndex, answerIndex, event) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].answers[answerIndex] = event.target.value;
-    setQuestions(newQuestions);
+  const handleQuestionChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[index] = { ...updatedQuestions[index], [name]: value };
+    setFormData({ ...formData, questions: updatedQuestions });
   };
 
-  const handleCorrectAnswerChange = (questionIndex, event) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].correctAnswerIndex = parseInt(
-      event.target.value
-    );
-    setQuestions(newQuestions);
+  const handleAnswerChange = (questionIndex, answerIndex, e) => {
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[questionIndex].answers[answerIndex] = e.target.value;
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  const handleCorrectAnswerChange = (questionIndex, e) => {
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[questionIndex].correctAnswerIndex = e.target.value;
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/quiz/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCreateError(data.message);
+        toast.error(data.message);
+        return;
+      }
+      if (res.ok) {
+        setCreateError(null);
+        navigate(`/quiz/${data.slug}`);
+        return;
+      }
+      setCreateError(null);
+      // Przekierowanie lub inne akcje po pomyślnym utworzeniu quizu
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+      toast.error(data.message);
+      setCreateError("Something went wrong");
+    }
   };
 
   const handleAddQuestion = () => {
-    setQuestions([
-      ...questions,
-      { content: "", answers: ["", "", "", ""], correctAnswerIndex: 0 },
-    ]);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Form submitted:", { title, questions });
-    // Tutaj można dodać logikę do wysłania danych do backendu
+    setFormData({
+      ...formData,
+      questions: [
+        ...formData.questions,
+        { content: "", answers: ["", "", "", ""], correctAnswerIndex: 0 },
+      ],
+    });
   };
 
   return (
     <div className="max-w-3xl mx-auto">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-      >
-        <div className="mb-4">
-          <label
-            htmlFor="title"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Quiz Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-2">
+        <label
+          htmlFor="title"
+          className="block text-gray-700 text-sm font-bold mb-2"
+        >
+          Quiz Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Quiz Title"
+          value={formData.title}
+          onChange={handleTitleChange}
+          className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+        />
 
-        {questions.map((question, index) => (
-          <div key={index} className="mb-4">
+        {formData.questions.map((question, questionIndex) => (
+          <div
+            key={questionIndex}
+            className="w-full flex flex-col gap-2 my-4 py-4 border border-t-gray-300"
+          >
             <label
-              htmlFor={`question-${index}`}
+              htmlFor={`question-${questionIndex}`}
               className="block text-gray-700 text-sm font-bold mb-2"
             >
-              Question {index + 1}
+              Question {questionIndex + 1}
             </label>
             <input
               type="text"
-              id={`question-${index}`}
+              id={`question-${questionIndex}`}
               name="content"
               value={question.content}
-              onChange={(e) => handleQuestionChange(index, e)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-              placeholder={`Enter question ${index + 1}`}
+              onChange={(e) => handleQuestionChange(questionIndex, e)}
+              className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+              placeholder={`Enter question ${questionIndex + 1}`}
             />
 
             {question.answers.map((answer, answerIndex) => (
               <input
                 key={answerIndex}
                 type="text"
-                name={`answer-${index}-${answerIndex}`}
+                name={`answer-${questionIndex}-${answerIndex}`}
                 value={answer}
-                onChange={(e) => handleAnswerChange(index, answerIndex, e)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                onChange={(e) =>
+                  handleAnswerChange(questionIndex, answerIndex, e)
+                }
+                className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                 placeholder={`Enter answer ${answerIndex + 1}`}
               />
             ))}
 
             <label
-              htmlFor={`correct-answer-${index}`}
+              htmlFor={`correct-answer-${questionIndex}`}
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Correct Answer
             </label>
             <select
-              id={`correct-answer-${index}`}
-              name={`correctAnswer-${index}`}
+              id={`correct-answer-${questionIndex}`}
+              name={`correctAnswer-${questionIndex}`}
               value={question.correctAnswerIndex}
-              onChange={(e) => handleCorrectAnswerChange(index, e)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+              onChange={(e) => handleCorrectAnswerChange(questionIndex, e)}
+              className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
             >
               {question.answers.map((answer, answerIndex) => (
                 <option key={answerIndex} value={answerIndex}>{`Answer ${
@@ -115,17 +148,17 @@ const QuizForm = () => {
           </div>
         ))}
 
-        <div className="flex items-center justify-between">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={handleAddQuestion}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl border border-violet-500 px-3.5 py-2.5 text-md font-semibold text-violet-500 shadow-sm hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           >
             Add Question
           </button>
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="animate duration-300 w-full flex justify-center items-center gap-x-1 rounded-xl bg-violet-600 px-3.5 py-2.5 text-md font-semibold text-white shadow-sm hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           >
             Create Quiz
           </button>
@@ -135,4 +168,4 @@ const QuizForm = () => {
   );
 };
 
-export default QuizForm;
+export default CreateQuiz;

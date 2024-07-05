@@ -12,11 +12,11 @@ import PrivateRoute from "./components/PrivateRoute";
 import Ranking from "./pages/Ranking";
 import Messages from "./pages/Messages";
 import CreateQuiz from "./pages/CreateQuiz";
-import { Switch } from "@headlessui/react";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import QuizPage from "./pages/QuizPage";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -43,6 +43,7 @@ export default function App() {
             path="/apps/quiz-app-new/create-quiz"
             element={<CreateQuiz />}
           />
+          <Route path="/quiz/:quizSlug" element={<QuizPage />} />
         </Route>
       </Routes>
       {currentUser ? <NavbarBottom /> : <div />}
