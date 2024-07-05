@@ -2,6 +2,7 @@ import React from "react";
 import Animation from "../components/Animation";
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
+import Balancer from "react-wrap-balancer";
 
 const Start = () => {
   return (
@@ -12,12 +13,16 @@ const Start = () => {
             src="https://friendshipquizzes.com/assets/images/friendship-quiz.png"
             alt=""
           />
-          <h1 className="text-4xl font-bold tracking-wide">
-            Challenge yourself. Enhance your skills. Play bite-sized games.
+          <h1 className="text-3xl font-bold tracking-wide">
+            <Balancer>
+              Challenge yourself. Enhance your skills. Play bite-sized games.
+            </Balancer>
           </h1>
-          <p>
-            Try it now. Dare to be better day by day and don't forget to have
-            fun.
+          <p className="text-md ">
+            <Balancer>
+              Try it now. Dare to be better day by day and don't forget to have
+              fun.
+            </Balancer>
           </p>
         </div>
         <div className="w-full flex flex-col sm:flex-row gap-2">
