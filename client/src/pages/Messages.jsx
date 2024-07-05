@@ -118,60 +118,68 @@ const Messages = () => {
               <div className="flex justify-center items-start py-8">
                 <h2>Chat for everyone</h2>
               </div>
-              {messages.map((message) => (
-                <m.div
-                  key={message._id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.75, ease: "easeOut" }}
-                  className={`flex items-end gap-1 mb-1 px-4 ${
-                    message.senderId === currentUser._id
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
-                  {message.senderId !== currentUser._id && (
-                    <img
-                      className="w-6 h-6 rounded-full object-cover object-center"
-                      src={message.senderPhoto}
-                      alt={`${message.senderUsername}'s profile`}
-                    />
-                  )}
-
-                  <div
-                    className={`flex flex-col max-w-xs ${
+              {messages.length > 0 ? (
+                messages.map((message) => (
+                  <m.div
+                    key={message._id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.75, ease: "easeOut" }}
+                    className={`flex items-end gap-1 mb-1 px-4 ${
                       message.senderId === currentUser._id
-                        ? "items-end"
-                        : "items-start"
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
-                    <h3
-                      className={`text-xs text-gray-500 mb-0.5 ${
-                        message.senderId === currentUser._id ? "me-3" : "ms-3"
-                      }`}
-                    >
-                      {message.senderUsername}
-                    </h3>
-                    <p
-                      className={`text-md rounded-2xl px-3 py-2 ${
+                    {message.senderId !== currentUser._id && (
+                      <img
+                        className="w-6 h-6 rounded-full object-cover object-center"
+                        src={message.senderPhoto}
+                        alt={`${message.senderUsername}'s profile`}
+                      />
+                    )}
+
+                    <div
+                      className={`flex flex-col max-w-xs  ${
                         message.senderId === currentUser._id
-                          ? "bg-red-300 text-gray-800 self-end"
-                          : "bg-gray-300 text-gray-800"
+                          ? "items-end"
+                          : "items-start"
                       }`}
                     >
-                      {message.message}
-                    </p>
-                    <p
-                      className={`text-xs text-gray-500 hidden ${
-                        message.senderId === currentUser._id ? "me-2" : "ms-2"
-                      }`}
-                    >
-                      {new Date(message.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                </m.div>
-              ))}
+                      <h3
+                        className={`text-xs text-gray-500 mb-0.5 ${
+                          message.senderId === currentUser._id
+                            ? " me-3"
+                            : " ms-3"
+                        }`}
+                      >
+                        {message.senderUsername}
+                      </h3>
+                      <p
+                        className={`text-md rounded-2xl px-3 py-2  ${
+                          message.senderId === currentUser._id
+                            ? "bg-red-300 text-gray-800 self-end "
+                            : "bg-gray-300 text-gray-800 "
+                        }`}
+                      >
+                        {message.message}
+                      </p>
+                      <p
+                        className={`text-xs text-gray-500 hidden ${
+                          message.senderId === currentUser._id
+                            ? " me-2"
+                            : " ms-2"
+                        }`}
+                      >
+                        {new Date(message.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </m.div>
+                ))
+              ) : (
+                <p className="text-center">No messages found.</p>
+              )}
             </div>
             <div className="flex px-4 w-full left-0 fixed bottom-16">
               <form
