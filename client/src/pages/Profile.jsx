@@ -34,7 +34,7 @@ const Profile = () => {
     <Animation>
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
         {/* Profile Info */}
-        <div className="col-span-4 rounded-xl p-3 bg-gray-100 flex flex-col gap-2">
+        <div className="col-span-4 rounded-xl p-3 bg-gray-100 dark:bg-gray-900 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
             <img
               className="w-16 h-16 rounded-full object-cover cursor-pointer"

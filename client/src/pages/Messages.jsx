@@ -107,7 +107,7 @@ const Messages = () => {
 
   return (
     <Animation>
-      <div className="h-full w-full fixed bottom-0 left-0 pt-14 pb-28 ">
+      <div className="h-full w-full fixed top-14 left-0 pb-44 ">
         <div className="max-w-3xl mx-auto h-full flex flex-col">
           {/* Selected Conversation */}
           <div className="h-full">

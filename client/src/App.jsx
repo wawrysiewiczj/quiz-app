@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 //import pages
 import Home from "./pages/Home";
@@ -12,11 +12,14 @@ import PrivateRoute from "./components/PrivateRoute";
 import Ranking from "./pages/Ranking";
 import Messages from "./pages/Messages";
 import CreateQuiz from "./pages/CreateQuiz";
+import { Switch } from "@headlessui/react";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 export default function App() {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <BrowserRouter>
       <Header />
@@ -42,7 +45,7 @@ export default function App() {
           />
         </Route>
       </Routes>
-      <NavbarBottom />
+      {currentUser ? <NavbarBottom /> : <div />}
     </BrowserRouter>
   );
 }

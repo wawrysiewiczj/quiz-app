@@ -17,7 +17,6 @@ const Settings = () => {
   const [enabled2, setEnabled2] = useState(false);
   const [enabled3, setEnabled3] = useState(false);
   const [enabled4, setEnabled4] = useState(false);
-
   const dispatch = useDispatch();
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -74,7 +73,6 @@ const Settings = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-gray-800">Dark Mode</span>
                     <Switch
-                      disabled
                       checked={enabled1}
                       onChange={setEnabled1}
                       className="group inline-flex h-6 w-11 items-center rounded-full bg-white transition data-[checked]:bg-violet-600"
@@ -109,7 +107,7 @@ const Settings = () => {
               </div>
 
               {/* Notification Settings */}
-              <div className="col-span-4">
+              <div className="col-span-4 mt-4">
                 <h3 className="font-medium mb-4">Notification Settings</h3>
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between">
@@ -142,7 +140,7 @@ const Settings = () => {
               </div>
 
               {/* Account Settings */}
-              <div className="col-span-4">
+              <div className="col-span-4 mt-4">
                 <h3 className="font-medium mb-4">Account Settings</h3>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between"></div>
