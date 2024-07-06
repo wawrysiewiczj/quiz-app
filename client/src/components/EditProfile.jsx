@@ -70,7 +70,22 @@ const EditProfile = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\W).{8,}$/;
+    return regex.test(password);
+  };
+
   const handleSubmit = async (e) => {
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+    if (!validatePassword(formData.password)) {
+      toast.error(
+        "Password must be at least 8 characters long, contain one uppercase letter and one special character."
+      );
+      return;
+    }
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -192,29 +207,71 @@ const EditProfile = () => {
                       )}
                     </p>
                   </div>
-                  <input
-                    defaultValue={currentUser.username}
-                    type="text"
-                    id="username"
-                    placeholder="Your name"
-                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
-                  <input
-                    defaultValue={currentUser.email}
-                    type="text"
-                    id="email"
-                    placeholder="Email"
-                    className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                    className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                    onChange={handleChange}
-                  />
+                  <div className="">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="username"
+                    >
+                      Username
+                    </label>
+                    <input
+                      defaultValue={currentUser.username}
+                      type="text"
+                      id="username"
+                      placeholder="Your name"
+                      className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="email"
+                    >
+                      E-mail
+                    </label>
+                    <input
+                      defaultValue={currentUser.email}
+                      type="text"
+                      id="email"
+                      placeholder="Email"
+                      className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="password"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      placeholder="Password"
+                      autoComplete="false"
+                      className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="confirmPassword"
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      placeholder="Password"
+                      autoComplete="false"
+                      className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      onChange={handleChange}
+                    />
+                  </div>
+
                   {/* Buttons */}
                   <div className="flex gap-2">
                     <ButtonSecondary

@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Remove passwordConfirmation field before saving to the database
+userSchema.pre("save", function (next) {
+  this.passwordConfirmation = undefined;
+  next();
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

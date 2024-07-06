@@ -4,7 +4,30 @@ import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, passwordConfirmation } = req.body;
+
+  // Check if password and passwordConfirmation match
+  if (password !== passwordConfirmation) {
+    return next(
+      errorHandler(400, "Password confirmation does not match password")
+    );
+  }
+
+  // Validate password
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\W).{8,}$/;
+    return regex.test(password);
+  };
+
+  if (!validatePassword(password)) {
+    return next(
+      errorHandler(
+        400,
+        "Password must be at least 8 characters long, contain one uppercase letter and one special character."
+      )
+    );
+  }
+
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
   const user = await User.findOne({
@@ -13,7 +36,7 @@ export const signup = async (req, res, next) => {
 
   if (user) {
     if (user.username === username) {
-      return next(errorHandler(400, "User already exist"));
+      return next(errorHandler(400, "User already exists"));
     }
     if (user.email === email) {
       return next(errorHandler(400, "Email already used"));
@@ -24,7 +47,7 @@ export const signup = async (req, res, next) => {
 
   try {
     await newUser.save();
-    res.status(201).json({ message: "User created succefully" });
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     next(error);
   }

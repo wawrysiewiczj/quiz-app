@@ -73,11 +73,11 @@ const CreateQuiz = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-full sm:max-w-md mx-auto">
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-2">
         <label
           htmlFor="title"
-          className="block text-gray-700 text-sm font-bold mb-2"
+          className="block text-gray-700 text-sm font-bold"
         >
           Quiz Title
         </label>
@@ -96,35 +96,46 @@ const CreateQuiz = () => {
             key={questionIndex}
             className="w-full flex flex-col gap-2 my-4 py-4 border border-t-gray-300"
           >
-            <label
-              htmlFor={`question-${questionIndex}`}
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Question {questionIndex + 1}
-            </label>
-            <input
-              type="text"
-              id={`question-${questionIndex}`}
-              name="content"
-              value={question.content}
-              onChange={(e) => handleQuestionChange(questionIndex, e)}
-              className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-              placeholder={`Enter question ${questionIndex + 1}`}
-            />
-
-            {question.answers.map((answer, answerIndex) => (
+            <div className="flex flex-col mb-4">
+              <label
+                htmlFor={`question-${questionIndex}`}
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Question {questionIndex + 1}
+              </label>
               <input
-                key={answerIndex}
                 type="text"
-                name={`answer-${questionIndex}-${answerIndex}`}
-                value={answer}
-                onChange={(e) =>
-                  handleAnswerChange(questionIndex, answerIndex, e)
-                }
+                id={`question-${questionIndex}`}
+                name="content"
+                value={question.content}
+                onChange={(e) => handleQuestionChange(questionIndex, e)}
                 className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
-                placeholder={`Enter answer ${answerIndex + 1}`}
+                placeholder={`Enter question ${questionIndex + 1}`}
               />
-            ))}
+            </div>
+
+            <div className="flex flex-col gap-2 mb-4">
+              <label
+                htmlFor={`answers-${questionIndex}`}
+                className="block text-gray-700 text-sm font-bold"
+              >
+                Answers
+              </label>
+              {question.answers.map((answer, answerIndex) => (
+                <input
+                  key={answerIndex}
+                  type="text"
+                  id={`answers-${questionIndex}-${answerIndex}`}
+                  name={`answer-${questionIndex}-${answerIndex}`}
+                  value={answer}
+                  onChange={(e) =>
+                    handleAnswerChange(questionIndex, answerIndex, e)
+                  }
+                  className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                  placeholder={`Enter answer ${answerIndex + 1}`}
+                />
+              ))}
+            </div>
 
             <label
               htmlFor={`correct-answer-${questionIndex}`}

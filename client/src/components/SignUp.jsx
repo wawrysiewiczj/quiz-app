@@ -15,6 +15,13 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if password and passwordConfirmation match
+    if (formData.password !== formData.passwordConfirmation) {
+      toast.error("Password confirmation does not match password");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await fetch("/api/auth/sign-up", {
@@ -61,10 +68,17 @@ const SignUp = () => {
               <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                   <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="username"
+                    >
+                      Username
+                    </label>
                     <input
                       type="text"
                       id="username"
                       name="username"
+                      required
                       placeholder="Username"
                       aria-describedby="username"
                       aria-invalid="false"
@@ -77,10 +91,17 @@ const SignUp = () => {
                     </div>
                   </div>
                   <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="email"
+                    >
+                      E-mail
+                    </label>
                     <input
                       type="email"
                       id="email"
                       name="email"
+                      required
                       placeholder="E-mail"
                       aria-describedby="email"
                       aria-invalid="false"
@@ -92,10 +113,17 @@ const SignUp = () => {
                     </div>
                   </div>
                   <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="password"
+                    >
+                      Password
+                    </label>
                     <input
                       type="password"
                       id="password"
                       name="password"
+                      required
                       placeholder="Password"
                       aria-describedby="password"
                       aria-invalid="false"
@@ -103,7 +131,29 @@ const SignUp = () => {
                       onChange={handleChange}
                     />
                     <div id="password" className="sr-only">
-                      your password should be more than 6 character
+                      Your password should be more than 6 characters
+                    </div>
+                  </div>
+                  <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="passwordConfirmation"
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="passwordConfirmation"
+                      name="passwordConfirmation"
+                      placeholder="Password"
+                      aria-describedby="passwordConfirmation"
+                      aria-invalid="false"
+                      required
+                      className="w-full flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      onChange={handleChange}
+                    />
+                    <div id="passwordConfirmation" className="sr-only">
+                      Please confirm your password
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">

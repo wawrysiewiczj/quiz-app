@@ -9,29 +9,35 @@ export const user = (req, res) => {
 };
 
 // updateUser
-
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     return next(errorHandler(401, "You can update only your account"));
   }
+
   try {
-    if (req.body.password) {
+    // Check if password and passwordConfirmation match
+    if (req.body.password && req.body.passwordConfirmation) {
+      if (req.body.password !== req.body.passwordConfirmation) {
+        return next(
+          errorHandler(400, "Password confirmation does not match password")
+        );
+      }
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
+
+    // Create update object dynamically
+    const updateData = {};
+    if (req.body.username) updateData.username = req.body.username;
+    if (req.body.email) updateData.email = req.body.email;
+    if (req.body.password) updateData.password = req.body.password;
+    if (req.body.profilePhoto) updateData.profilePhoto = req.body.profilePhoto;
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          profilePhoto: req.body.profilePhoto,
-        },
-      },
-      {
-        new: true,
-      }
+      { $set: updateData },
+      { new: true }
     );
+
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {

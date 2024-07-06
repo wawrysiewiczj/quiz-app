@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
+import { AcademicCapIcon, PlayIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
 const UserQuizzes = () => {
@@ -29,7 +29,7 @@ const UserQuizzes = () => {
       {userQuizzes.length === 0 ? (
         <p>No quizzes available</p>
       ) : (
-        <ul className="grid grid-cols-4 gap-2">
+        <ul className="grid grid-cols-4 sm:grid-cols-8 gap-2">
           {userQuizzes.map((quiz) => (
             <Link
               key={quiz._id}
@@ -38,7 +38,7 @@ const UserQuizzes = () => {
             >
               <li key={quiz._id} className="flex justify-between items-center">
                 <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                  <span className="rounded-xl bg-violet-300 dark:bg-violet-800 p-3 bg-opacity-70">
+                  <span className="rounded-xl bg-gray-200 dark:bg-gray-800 p-3 bg-opacity-70">
                     <AcademicCapIcon className="h-6 w-6" />
                   </span>
                 </div>
@@ -48,14 +48,8 @@ const UserQuizzes = () => {
                     {quiz.category}
                   </p>
                 </div>
-                <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300">
-                  {quiz.userId && quiz.userId.profilePhoto && (
-                    <img
-                      src={quiz.userId.profilePhoto}
-                      alt="User Profile"
-                      width="50"
-                    />
-                  )}
+                <div className="pr-1.5 pl-2 py-2 w-8 h-8 rounded-full text-violet-800 bg-violet-300 dark:bg-violet-800 flex justify-center items-center">
+                  <PlayIcon className="h-6 w-6" />
                 </div>
               </li>
             </Link>

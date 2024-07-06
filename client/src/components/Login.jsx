@@ -64,6 +64,12 @@ const Login = () => {
               <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                   <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="username"
+                    >
+                      Username
+                    </label>
                     <input
                       type="text"
                       id="username"
@@ -80,6 +86,12 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="form_control">
+                    <label
+                      className="block text-gray-700 text-sm font-semibold"
+                      htmlFor="password"
+                    >
+                      Password
+                    </label>
                     <input
                       type="password"
                       id="password"
