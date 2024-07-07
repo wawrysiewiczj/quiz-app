@@ -1,24 +1,111 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 import { toast } from "react-toastify";
 import {
   AcademicCapIcon,
-  ArrowRightStartOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
+import {
+  fetchUserStatsStart,
+  fetchUserStatsSuccess,
+  fetchUserStatsFailure,
+} from "../redux/userStats/userStatsSlice";
+import {
+  fetchQuizResultStart,
+  fetchQuizResultSuccess,
+  fetchQuizResultFailure,
+} from "../redux/quizResult/quizResultSlice";
 
 // import components
 import Animation from "../components/Animation";
 import EditProfile from "../components/EditProfile";
 import Settings from "../components/Settings";
-import MyQuizzes from "../components/MyQuizzes";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {
+    loading: loadingQuizResults,
+    error: errorQuizResults,
+    quizResults,
+  } = useSelector((state) => state.quizResult);
+  const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const [userQuizzes, setUserQuizzes] = useState([]);
+  const [totalQuizzesByUser, setTotalQuizzesByUser] = useState(0);
+  const [userStats, setUserStats] = useState([]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchQuizzes = async () => {
+      try {
+        const res = await fetch(`/api/quiz/get?userId=${currentUser._id}`);
+        const data = await res.json();
+        if (res.ok) {
+          setUserQuizzes(data.quizzes);
+          setTotalQuizzesByUser(data.totalQuizzesByUser);
+        }
+      } catch (error) {
+        console.error("Error fetching user quizzes:", error.message);
+      }
+    };
+    fetchQuizzes();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchUserStats = async () => {
+      try {
+        dispatch(fetchUserStatsStart());
+        const response = await fetch(
+          `/api/user/stats?userId=${currentUser._id}`
+        ); // Ścieżka do API
+        if (!response.ok) {
+          throw new Error("Nie udało się pobrać danych.");
+        }
+        const data = await response.json();
+        console.log("User Stats:", data); // Debugowanie
+        dispatch(fetchUserStatsSuccess(data));
+
+        // Fetch the total quizzes created by the user
+        const quizResponse = await fetch(`/api/quiz/get?userId=${data.userId}`);
+        if (!quizResponse.ok) {
+          throw new Error("Nie udało się pobrać danych quizu.");
+        }
+        const quizData = await quizResponse.json();
+        console.log("Total Quizzes by User:", quizData); // Debugowanie
+        setTotalQuizzesByUser(quizData.totalQuizzesByUser);
+      } catch (error) {
+        dispatch(fetchUserStatsFailure(error.message));
+      }
+    };
+
+    fetchUserStats();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchQuizResults = async () => {
+      try {
+        dispatch(fetchQuizResultStart());
+        const res = await fetch(`/api/user/results/${currentUser._id}`);
+        const data = await res.json();
+        if (res.ok) {
+          dispatch(fetchQuizResultSuccess(data));
+        }
+      } catch (error) {
+        dispatch(fetchQuizResultFailure(error.message));
+      }
+    };
+
+    fetchQuizResults();
+  }, [dispatch, currentUser._id]);
 
   const handleSignOut = async () => {
     try {
@@ -31,6 +118,9 @@ const Profile = () => {
     }
   };
 
+  // Debug log
+  const stats = userStats[0] || {};
+
   return (
     <Animation>
       <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
@@ -39,12 +129,14 @@ const Profile = () => {
           <div className="flex gap-2 items-center">
             <img
               className="w-16 h-16 rounded-full object-cover cursor-pointer"
-              src={formData.profilePhoto || currentUser.profilePhoto}
-              alt="Profile Poto"
+              src={formData.profilePhoto || currentUser?.profilePhoto}
+              alt="Profile Photo"
             />
             <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-semibold">{currentUser.username}</h3>
-              <p className="text-sm">{currentUser.email}</p>
+              <h3 className="text-2xl font-semibold">
+                {currentUser?.username}
+              </h3>
+              <p className="text-sm">{currentUser?.email}</p>
             </div>
           </div>
           <div className="flex items-center">
@@ -54,97 +146,136 @@ const Profile = () => {
               onClick={handleSignOut}
               className="animate duration-200 w-full flex justify-center items-center gap-x-1 rounded-xl p-2 text-md font-semibold hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
-              <ArrowRightStartOnRectangleIcon className="size-5 " />
+              <ArrowRightOnRectangleIcon className="size-5 " />
             </Link>
           </div>
         </div>
 
         {/* Quiz Statistics */}
         <div className="col-span-4 text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold mb-4">Quiz Statistics</h3>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="font-bold text-md">Quiz Statistics</h3>
+            <button className="font-bold text-sm text-violet-500">
+              View all
+            </button>
+          </div>
           <div className="grid grid-cols-3 gap-2 ">
             <div>
-              <h4 className="text-2xl font-bold text-violet-500">15</h4>
+              <h4 className="text-2xl font-bold text-violet-500">
+                {userStats.quizzesTaken || 0}
+              </h4>
               <p className="text-sm">Quizzes Taken</p>
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-violet-500">85%</h4>
+              <h4 className="text-2xl font-bold text-violet-500">
+                {(stats.averageScore || 0).toFixed(1)}%
+              </h4>
               <p className="text-sm">Average Score</p>
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-violet-500">10</h4>
+              <h4 className="text-2xl font-bold text-violet-500">
+                {totalQuizzesByUser || 0}
+              </h4>
               <p className="text-sm">Quizzes Created</p>
             </div>
           </div>
         </div>
 
         {/* Completed Quizzes */}
-        <div className="col-span-4 bg-gray-100 dark:bg-gray-900 dark:text-gray-100 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold mb-4">Completed Quizzes</h3>
+        <div className="col-span-4 text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="font-bold text-md">Completed Quizzes</h3>
+            <button className="font-bold text-sm text-violet-500">
+              View all
+            </button>
+          </div>
+
           <ul className="grid grid-cols-4 gap-2">
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 dark:bg-green-700 dark:text-gray-100 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 dark:bg-violet-800 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <div>
-                <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 1</p>
-              </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300 dark:ring-green-500">
-                <span>100%</span>
-              </div>
-            </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-green-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <div>
-                <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 2</p>
-              </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-green-300">
-                <span>90%</span>
-              </div>
-            </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-red-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <div>
-                <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 3</p>
-              </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-red-300">
-                <span>30%</span>
-              </div>
-            </li>
-            <li className="animate duration-300 flex justify-between items-center col-span-4 bg-orange-100 text-gray-800 rounded-xl shadow-sm px-3.5 py-2.5">
-              <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
-                <span className="rounded-xl bg-violet-300 p-3 bg-opacity-70">
-                  <AcademicCapIcon className="h-6 w-6" />
-                </span>
-              </div>
-              <div>
-                <h3 className="text-md font-semibold leading-6">Math</h3>
-                <p className="text-sm font-semibold">Level 4</p>
-              </div>
-              <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring ring-orange-300">
-                <span>60%</span>
-              </div>
-            </li>
+            {loadingQuizResults && <p>Loading...</p>}
+            {errorQuizResults && <p>Error: {errorQuizResults}</p>}
+            {!loadingQuizResults &&
+              !errorQuizResults &&
+              quizResults.map((result) => (
+                <li
+                  key={result._id}
+                  className={`animate duration-300 flex justify-between items-center col-span-4 rounded-xl shadow-sm px-3.5 py-2.5 ${
+                    result.score >= 80
+                      ? "bg-green-100 text-gray-800 dark:bg-green-700 dark:text-gray-100"
+                      : result.score >= 60
+                      ? "bg-yellow-100 text-gray-800 dark:bg-yellow-600 dark:text-gray-100"
+                      : result.score >= 40
+                      ? "bg-orange-100 text-gray-800 dark:bg-orange-500 dark:text-gray-100"
+                      : "bg-red-100 text-gray-800 dark:bg-red-500 dark:text-gray-100"
+                  }`}
+                >
+                  <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
+                    <span className="rounded-xl bg-violet-300 dark:bg-violet-800 p-3 bg-opacity-70">
+                      <AcademicCapIcon className="h-6 w-6" />
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-md font-bold leading-6">quiz title</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      by username
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring dark:ring-green-500">
+                    <span className="text-sm">
+                      {(result.score || 0).toFixed(1)}%
+                    </span>
+                  </div>
+                </li>
+              ))}
           </ul>
         </div>
 
-        {/* My Quizzes */}
         <div className="col-span-4 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
-          <h3 className="text-xl font-bold mb-4">My Quizzes</h3>
-          <MyQuizzes />
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="font-bold text-md">My Quizzes</h3>
+            <button className="font-bold text-sm text-violet-500">
+              View all
+            </button>
+          </div>
+          <div className="">
+            {userQuizzes.length === 0 ? (
+              <p>No quizzes available</p>
+            ) : (
+              <ul className="grid grid-cols-4 gap-2">
+                {userQuizzes.map((quiz) => (
+                  <Link
+                    key={quiz._id}
+                    to={`/quiz/${quiz.slug}`}
+                    className="animate duration-300 col-span-4 bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-sm px-3.5 py-2.5"
+                  >
+                    <li className="flex justify-between items-center">
+                      <div className="mb-1 flex space-y-2 items-center gap-3 overflow-hidden">
+                        <span className="rounded-xl bg-violet-300 dark:bg-violet-800 p-3 bg-opacity-70">
+                          <AcademicCapIcon className="h-6 w-6" />
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-md font-bold leading-6">
+                          {quiz.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {quiz.category.name}
+                        </p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteQuiz(quiz._id);
+                        }}
+                        className="flex justify-center items-center bg-red-500 text-white px-3.5 py-2.5 rounded-xl shadow hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        <TrashIcon className="w-5 h-5 inline" />
+                      </button>
+                    </li>
+                  </Link>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </Animation>

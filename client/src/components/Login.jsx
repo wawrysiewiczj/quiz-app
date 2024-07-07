@@ -96,7 +96,7 @@ const Login = () => {
                       type="password"
                       id="password"
                       name="password"
-                      placeholder="Password"
+                      placeholder="********"
                       aria-describedby="password"
                       aria-invalid="false"
                       className="w-full flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"

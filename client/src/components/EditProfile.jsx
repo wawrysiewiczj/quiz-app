@@ -207,7 +207,7 @@ const EditProfile = () => {
                       )}
                     </p>
                   </div>
-                  <div className="">
+                  <div className="mt-4">
                     <label
                       className="block text-gray-700 text-sm font-semibold"
                       htmlFor="username"
@@ -244,14 +244,14 @@ const EditProfile = () => {
                       className="block text-gray-700 text-sm font-semibold"
                       htmlFor="password"
                     >
-                      Password
+                      New Password
                     </label>
                     <input
                       type="password"
                       id="password"
-                      placeholder="Password"
+                      placeholder="********"
                       autoComplete="false"
-                      className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      className="flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                       onChange={handleChange}
                     />
                   </div>
@@ -265,15 +265,15 @@ const EditProfile = () => {
                     <input
                       type="password"
                       id="confirmPassword"
-                      placeholder="Password"
+                      placeholder="********"
                       autoComplete="false"
-                      className="mb-4 flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+                      className=" flex-1 w-full bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
                       onChange={handleChange}
                     />
                   </div>
 
                   {/* Buttons */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mt-4">
                     <ButtonSecondary
                       type="button"
                       text="Cancel"

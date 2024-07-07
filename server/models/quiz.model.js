@@ -27,6 +27,7 @@ const quizSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     title: {
@@ -35,8 +36,9 @@ const quizSchema = new mongoose.Schema(
       unique: true,
     },
     category: {
-      type: String,
-      default: "Uncategorized",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
     },
     questions: {
       type: [questionSchema],

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 //import pages
 import Home from "./pages/Home";
@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import QuizPage from "./pages/QuizPage";
+import CategoryPage from "./pages/CategoryPage";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -44,6 +45,7 @@ export default function App() {
             element={<CreateQuiz />}
           />
           <Route path="/quiz/:quizSlug" element={<QuizPage />} />
+          <Route path="/category/:categorySlug" element={<CategoryPage />} />
         </Route>
       </Routes>
       {currentUser ? <NavbarBottom /> : <div />}

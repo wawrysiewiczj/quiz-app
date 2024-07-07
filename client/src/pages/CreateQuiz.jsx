@@ -1,13 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import {
+  fetchCategoryStart,
+  fetchCategorySuccess,
+  fetchCategoryFailure,
+} from "../redux/category/categorySlice";
 
 const CreateQuiz = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ title: "", questions: [] });
+  const { quizSlug } = useParams();
+
   const [createError, setCreateError] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [formData, setFormData] = useState({
+    title: "",
+    questions: [],
+    category: "",
+  });
+
+  // Event handlers
+  const handleCategoryChange = (e) => {
+    setFormData({ ...formData, category: e.target.value });
+  };
 
   const handleTitleChange = (e) => {
     setFormData({ ...formData, title: e.target.value });
@@ -32,10 +50,39 @@ const CreateQuiz = () => {
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        dispatch(fetchCategoryStart());
+
+        const response = await fetch("/api/category/get", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+
+        dispatch(fetchCategorySuccess(data));
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        dispatch(fetchCategoryFailure());
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/quiz/create", {
+      const res = await fetch(`/api/quiz/create?slug=${quizSlug}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,16 +95,11 @@ const CreateQuiz = () => {
         toast.error(data.message);
         return;
       }
-      if (res.ok) {
-        setCreateError(null);
-        navigate(`/quiz/${data.slug}`);
-        return;
-      }
+      navigate(`/quiz/?slug=${quizSlug}`);
       setCreateError(null);
-      // Przekierowanie lub inne akcje po pomyślnym utworzeniu quizu
     } catch (error) {
       console.error("Error creating quiz:", error);
-      toast.error(data.message);
+      toast.error("Something went wrong");
       setCreateError("Something went wrong");
     }
   };
@@ -90,6 +132,29 @@ const CreateQuiz = () => {
           onChange={handleTitleChange}
           className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
         />
+
+        <div className="flex flex-col gap-2 mb-4">
+          <label
+            htmlFor="category"
+            className="block text-gray-700 text-sm font-bold"
+          >
+            Category
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleCategoryChange}
+            className="flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {formData.questions.map((question, questionIndex) => (
           <div

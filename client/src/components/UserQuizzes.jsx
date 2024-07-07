@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { AcademicCapIcon, PlayIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
 const UserQuizzes = () => {
-  const { currentUser } = useSelector((state) => state.user);
   const [userQuizzes, setUserQuizzes] = useState([]);
-  console.log(userQuizzes);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -18,11 +15,10 @@ const UserQuizzes = () => {
         }
       } catch (error) {
         console.error("Error fetching user quizzes:", error.message);
-        // Obsługa błędów - można dodać komponent do wyświetlania błędów
       }
     };
     fetchQuizzes();
-  }, [currentUser._id]);
+  });
 
   return (
     <div>
@@ -45,7 +41,7 @@ const UserQuizzes = () => {
                 <div className="text-center">
                   <h3 className="text-md font-bold leading-6">{quiz.title}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {quiz.category}
+                    {quiz.category ? quiz.category.name : "Unknown Category"}
                   </p>
                 </div>
                 <div className="pr-1.5 pl-2 py-2 w-8 h-8 rounded-full text-violet-800 bg-violet-300 dark:bg-violet-800 flex justify-center items-center">

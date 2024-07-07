@@ -124,7 +124,7 @@ const SignUp = () => {
                       id="password"
                       name="password"
                       required
-                      placeholder="Password"
+                      placeholder="********"
                       aria-describedby="password"
                       aria-invalid="false"
                       className="w-full flex-1 bg-white placeholder:text-gray-500 text-gray-800 border-none px-3.5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600"
@@ -145,7 +145,7 @@ const SignUp = () => {
                       type="password"
                       id="passwordConfirmation"
                       name="passwordConfirmation"
-                      placeholder="Password"
+                      placeholder="********"
                       aria-describedby="passwordConfirmation"
                       aria-invalid="false"
                       required

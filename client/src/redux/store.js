@@ -3,6 +3,9 @@ import userReducer from "./user/userSlice";
 import messageReducer from "./message/messageSlice";
 import userquizReducer from "./userquiz/userquizSlice";
 import themeReducer from "./theme/themeSlice";
+import userStatsReducer from "./userStats/userStatsSlice";
+import categoryReducer from "./category/categorySlice.js";
+import quizResultReducer from "./quizResult/quizResultSlice.js";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import {
@@ -15,6 +18,9 @@ const rootReducer = combineReducers({
   message: messageReducer,
   userQuiz: userquizReducer,
   theme: themeReducer,
+  category: categoryReducer,
+  userStats: userStatsReducer,
+  quizResult: quizResultReducer,
 });
 
 const persistConfig = {
