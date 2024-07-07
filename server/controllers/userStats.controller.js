@@ -1,26 +1,22 @@
 import UserStats from "../models/userStats.model.js";
+import { errorHandler } from "../utils/error.js";
 
-// Get user stats
 export const getUserStats = async (req, res, next) => {
-  try {
-    const userId = req.userId; // Pobieramy _id zalogowanego użytkownika
+  const userId = req.params.id; // Use req.params to get the userId from the URL
 
-    // Szukamy statystyk użytkownika na podstawie userId
+  if (!userId) {
+    return next(errorHandler(400, "User ID is required"));
+  }
+
+  try {
     const userStats = await UserStats.findOne({ userId });
 
     if (!userStats) {
-      return res
-        .status(404)
-        .json({ message: "Statystyki użytkownika nie zostały znalezione." });
+      return res.status(404).json({ message: "User stats not found" });
     }
 
-    // Jeśli wszystko przebiegło pomyślnie, zwracamy statystyki użytkownika
     res.status(200).json(userStats);
   } catch (error) {
-    // Obsługa błędów
-    console.error("Błąd podczas pobierania statystyk użytkownika:", error);
-    res.status(500).json({
-      message: "Wystąpił błąd podczas pobierania statystyk użytkownika.",
-    });
+    next(error);
   }
 };

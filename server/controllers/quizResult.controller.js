@@ -1,18 +1,25 @@
-import QuizResults from "../models/quizResult.model.js";
+import QuizResult from "../models/quizResult.model.js";
 import { errorHandler } from "../utils/error.js";
+export const getUserQuizResults = async (req, res, next) => {
+  const userId = req.params.id; // Użyj req.params, aby pobrać userId z URL
 
-export const quizResult = async (req, res, next) => {
+  if (!userId) {
+    return next(errorHandler(400, "User ID is required"));
+  }
+
   try {
-    const query = {
-      ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.score && { score: req.query.score }),
-      ...(req.query.points && { points: req.query.points }),
-    };
+    const quizResults = await QuizResult.find({ userId })
+      .populate({
+        path: "userId", // pole w QuizResult, które odnosi się do User
+        select: "username", // wybierz tylko pole 'username' z User
+      })
+      .populate({
+        path: "quizId", // pole w QuizResult, które odnosi się do Quiz
+        select: "title", // wybierz tylko pole 'title' z Quiz
+      });
 
-    const quizResults = await QuizResults.find(query);
-
-    if (!quizResults.length) {
-      return next(errorHandler(404, "Quiz Result not found!"));
+    if (!quizResults || quizResults.length === 0) {
+      return res.status(404).json({ message: "Nie znaleziono wyników quizu" });
     }
 
     res.status(200).json(quizResults);

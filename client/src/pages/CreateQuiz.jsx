@@ -95,7 +95,7 @@ const CreateQuiz = () => {
         toast.error(data.message);
         return;
       }
-      navigate(`/quiz/?slug=${quizSlug}`);
+      navigate(`/quiz/${quiz.slug}`);
       setCreateError(null);
     } catch (error) {
       console.error("Error creating quiz:", error);

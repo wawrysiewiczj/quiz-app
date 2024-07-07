@@ -28,15 +28,15 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
-    loading: loadingQuizResults,
-    error: errorQuizResults,
-    quizResults,
+    loading: loadingquizResults,
+    error: errorquizResults,
+    quizResults = [],
   } = useSelector((state) => state.quizResult);
   const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
   const [userQuizzes, setUserQuizzes] = useState([]);
   const [totalQuizzesByUser, setTotalQuizzesByUser] = useState(0);
-  const [userStats, setUserStats] = useState([]);
+  const [userStats, setUserStats] = useState({});
 
   useEffect(() => {
     if (!currentUser) return;
@@ -62,31 +62,20 @@ const Profile = () => {
     const fetchUserStats = async () => {
       try {
         dispatch(fetchUserStatsStart());
-        const response = await fetch(
-          `/api/user/stats?userId=${currentUser._id}`
-        ); // Ścieżka do API
+        const response = await fetch(`/api/user/stats/${currentUser._id}`);
         if (!response.ok) {
-          throw new Error("Nie udało się pobrać danych.");
+          throw new Error("Failed to fetch user stats.");
         }
         const data = await response.json();
-        console.log("User Stats:", data); // Debugowanie
         dispatch(fetchUserStatsSuccess(data));
-
-        // Fetch the total quizzes created by the user
-        const quizResponse = await fetch(`/api/quiz/get?userId=${data.userId}`);
-        if (!quizResponse.ok) {
-          throw new Error("Nie udało się pobrać danych quizu.");
-        }
-        const quizData = await quizResponse.json();
-        console.log("Total Quizzes by User:", quizData); // Debugowanie
-        setTotalQuizzesByUser(quizData.totalQuizzesByUser);
+        setUserStats(data);
       } catch (error) {
         dispatch(fetchUserStatsFailure(error.message));
       }
     };
 
     fetchUserStats();
-  }, [currentUser]);
+  }, [currentUser, dispatch]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -96,16 +85,17 @@ const Profile = () => {
         dispatch(fetchQuizResultStart());
         const res = await fetch(`/api/user/results/${currentUser._id}`);
         const data = await res.json();
-        if (res.ok) {
-          dispatch(fetchQuizResultSuccess(data));
+        if (!res.ok) {
+          throw new Error("Failed to fetch quiz results.");
         }
+        dispatch(fetchQuizResultSuccess(data));
       } catch (error) {
         dispatch(fetchQuizResultFailure(error.message));
       }
     };
 
     fetchQuizResults();
-  }, [dispatch, currentUser._id]);
+  }, [currentUser, dispatch]);
 
   const handleSignOut = async () => {
     try {
@@ -114,7 +104,6 @@ const Profile = () => {
       navigate("/apps/quiz-app-new/start");
     } catch (error) {
       toast.error(error.message);
-      console.log(error);
     }
   };
 
@@ -168,7 +157,7 @@ const Profile = () => {
             </div>
             <div>
               <h4 className="text-2xl font-bold text-violet-500">
-                {(stats.averageScore || 0).toFixed(1)}%
+                {(userStats.averageScore || 0).toFixed(1)}%
               </h4>
               <p className="text-sm">Average Score</p>
             </div>
@@ -191,10 +180,7 @@ const Profile = () => {
           </div>
 
           <ul className="grid grid-cols-4 gap-2">
-            {loadingQuizResults && <p>Loading...</p>}
-            {errorQuizResults && <p>Error: {errorQuizResults}</p>}
-            {!loadingQuizResults &&
-              !errorQuizResults &&
+            {quizResults && quizResults.length > 0 ? (
               quizResults.map((result) => (
                 <li
                   key={result._id}
@@ -214,9 +200,11 @@ const Profile = () => {
                     </span>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-md font-bold leading-6">quiz title</h3>
+                    <h3 className="text-md font-bold leading-6">
+                      {result.quizId.title}
+                    </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      by username
+                      Created by {result.userId.username}
                     </p>
                   </div>
                   <div className="p-3 rounded-full w-12 h-12 flex justify-center items-center ring dark:ring-green-500">
@@ -225,7 +213,10 @@ const Profile = () => {
                     </span>
                   </div>
                 </li>
-              ))}
+              ))
+            ) : (
+              <p>No quiz results found.</p>
+            )}
           </ul>
         </div>
 

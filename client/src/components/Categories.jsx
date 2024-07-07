@@ -14,7 +14,6 @@ import {
 const Categories = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [createError, setCreateError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
